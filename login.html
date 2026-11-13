@@ -152,34 +152,151 @@ background:#f2e8d5;color:#705638;font-size:12px;line-height:2;
 <footer class="footer">© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.</footer>
 </main>
 <script>
-function showPage(page){
-document.getElementById('loginForm').classList.toggle('hidden',page!=='login');
-document.getElementById('registerForm').classList.toggle('hidden',page!=='register');
-document.getElementById('forgotForm').classList.toggle('hidden',page!=='forgot');
-document.getElementById('loginTab').classList.toggle('active',page==='login');
-document.getElementById('registerTab').classList.toggle('active',page==='register');
-document.getElementById('notice').style.display='none';
-}
-
-function demoMessage(message){
-const notice=document.getElementById('notice');
-notice.textContent=message;
-notice.style.display='block';
-}
-
-document.getElementById('loginForm').addEventListener('submit',function(e){
-e.preventDefault();
-demoMessage('فرم ورود آماده است؛ برای ورود واقعی باید سامانه احراز هویت متصل شود.');
+  const supabaseReady = import(
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+).then(({ createClient }) => {
+  return createClient(
+    'https://zowmefbbhowjyozynpay.supabase.co',
+    'sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS'
+  );
 });
 
-document.getElementById('registerForm').addEventListener('submit',function(e){
-e.preventDefault();
-demoMessage('فرم ثبت‌نام آماده است؛ ذخیره اطلاعات پس از اتصال امن به سرور فعال می‌شود.');
+function showPage(page) {
+  document.getElementById('loginForm').classList.toggle('hidden', page !== 'login');
+  document.getElementById('registerForm').classList.toggle('hidden', page !== 'register');
+  document.getElementById('forgotForm').classList.toggle('hidden', page !== 'forgot');
+  document.getElementById('loginTab').classList.toggle('active', page === 'login');
+  document.getElementById('registerTab').classList.toggle('active', page === 'register');
+  document.getElementById('notice').style.display = 'none';
+}
+
+function demoMessage(message) {
+  const notice = document.getElementById('notice');
+  notice.textContent = message;
+  notice.style.display = 'block';
+}
+
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  try {
+    const supabase = await supabaseReady;
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const phone = document.getElementById('registerPhone').value.trim();
+    const password = document.getElementById('registerPassword').value;
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          phone: phone
+        },
+        emailRedirectTo: window.location.href.split('?')[0]
+      }
+    });
+
+    if (error) throw error;
+
+    demoMessage(
+      'ثبت‌نام انجام شد. لطفاً ایمیل خود را باز کن و لینک تأیید حساب را بزن.'
+    );
+
+    this.reset();
+
+  } catch (error) {
+    demoMessage('خطا در ثبت‌نام: ' + error.message);
+  }
 });
 
-document.getElementById('forgotForm').addEventListener('submit',function(e){
-e.preventDefault();
-demoMessage('بازیابی رمز پس از اتصال سرویس ایمیل فعال می‌شود.');
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  try {
+    const supabase = await supabaseReady;
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email.includes('@')) {
+      demoMessage('فعلاً برای ورود، آدرس ایمیل را وارد کن.');
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profileError || !profile) {
+      await supabase.auth.signOut();
+      throw new Error('پروفایل کاربری پیدا نشد. با پشتیبانی تماس بگیر.');
+    }
+
+    if (profile.role === 'admin') {
+      window.location.href = 'admin.html';
+    } else {
+      window.location.href = 'student.html';
+    }
+
+  } catch (error) {
+    demoMessage('خطا در ورود: ' + error.message);
+  }
+});
+
+document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  try {
+    const supabase = await supabaseReady;
+    const email = document.getElementById('forgotEmail').value.trim();
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href.split('?')[0]
+    });
+
+    if (error) throw error;
+
+    demoMessage('اگر این ایمیل ثبت شده باشد، لینک بازیابی رمز برایت ارسال می‌شود.');
+
+  } catch (error) {
+    demoMessage('خطا در بازیابی رمز: ' + error.message);
+  }
+});
+
+supabaseReady.then(supabase => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'PASSWORD_RECOVERY' && session) {
+      const newPassword = prompt('رمز عبور جدید را وارد کن (حداقل ۸ کاراکتر):');
+
+      if (newPassword && newPassword.length >= 8) {
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword
+        });
+
+        if (error) {
+          demoMessage('خطا در تغییر رمز: ' + error.message);
+        } else {
+          demoMessage('رمز عبور با موفقیت تغییر کرد.');
+        }
+      } else {
+        demoMessage('رمز واردشده معتبر نیست. لطفاً دوباره درخواست بازیابی بده.');
+      }
+    }
+  });
+}).catch(error => {
+  demoMessage('خطا در اتصال به سامانه: ' + error.message);
 });
 </script>
 </body>
