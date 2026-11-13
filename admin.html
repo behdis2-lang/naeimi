@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پنل مدیریت | آگاهی و بیداری معنوی</title>
+<style>
+:root{
+--cream:#f6efdf;
+--paper:#fffaf0;
+--gold:#bd9652;
+--brown:#705638;
+--ink:#403426;
+--muted:#796b58;
+--line:#e8dcc7;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:var(--cream);
+color:var(--ink);
+}
+.header{
+background:var(--paper);
+padding:18px 22px;
+border-bottom:1px solid var(--line);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+.brand{color:var(--brown);font-weight:bold;font-size:17px}
+.header a{color:var(--brown);text-decoration:none;font-size:12px}
+.layout{
+max-width:1150px;
+margin:28px auto;
+padding:0 16px;
+display:grid;
+grid-template-columns:240px 1fr;
+gap:22px;
+}
+.sidebar{
+background:var(--paper);
+border:1px solid var(--line);
+border-radius:18px;
+padding:20px;
+height:max-content;
+}
+.profile{text-align:center;padding:15px 5px 22px;border-bottom:1px solid var(--line)}
+.avatar{
+width:65px;height:65px;border-radius:50%;
+background:linear-gradient(145deg,#bd9652,#8b7048);
+color:white;display:grid;place-items:center;
+font-size:25px;margin:auto auto 12px;
+}
+.profile h3{font-size:15px;margin:0 0 7px}
+.profile p{font-size:11px;color:var(--muted);margin:0}
+.menu{padding-top:15px;display:grid;gap:7px}
+.menu a{
+display:block;padding:12px;border-radius:9px;
+text-decoration:none;color:var(--brown);font-size:13px;
+}
+.menu a.active,.menu a:hover{background:#f1e5cf}
+.main{min-width:0}
+.welcome{
+background:linear-gradient(120deg,#8b7048,#bd9652);
+border-radius:18px;padding:27px;color:white;margin-bottom:20px;
+}
+.welcome h1{font-size:22px;margin:0 0 12px}
+.welcome p{font-size:13px;line-height:2;margin:0}
+.stats{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:13px;margin-bottom:24px;
+}
+.stat{
+background:var(--paper);border:1px solid var(--line);
+border-radius:14px;padding:17px;
+}
+.stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
+.stat span{font-size:11px;color:var(--muted)}
+.section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="brand">✧ مدیریت آگاهی و بیداری معنوی</div>
+<a href="index.html">بازگشت به سایت ←</a>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<div class="profile">
+<div class="avatar">م</div>
+<h3>مدیریت مدرس</h3>
+<p>مدیریت سامانه آموزشی</p>
+</div>
+<nav class="menu">
+<a class="active" href="#dashboard">داشبورد مدیریت</a>
+<a href="#students">هنرجویان</a>
+<a href="#courses">دوره‌ها</a>
+<a href="#content">محتوای آموزشی</a>
+<a href="#orders">سفارش‌ها</a>
+<a href="#reports">گزارش‌ها</a>
+<a href="#settings">تنظیمات</a>
+<a href="index.html">خروج</a>
+</nav>
+</aside>
+<main class="main">
+<section class="welcome" id="dashboard">
+<h1>خوش آمدی، مهدی نعیمی 🌱</h1>
+<p>از این بخش می‌توانی بخش‌های مختلف سامانه آموزشی خود را مدیریت کنی.</p>
+</section>
+<section class="stats">
+<div class="stat">
+<strong>۰</strong>
+<span>هنرجویان ثبت‌شده</span>
+</div>
+<div class="stat">
+<strong>۰</strong>
+<span>دوره‌های فعال</span>
+</div>
+<div class="stat">
+<strong>۰</strong>
+<span>سفارش‌ها</span>
+</div>
+</section>
+<section id="students" style="margin-bottom:25px">
+<h2 class="section-title">مدیریت هنرجویان</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:13px;color:var(--muted);line-height:2">
+در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.
+</p>
+</div>
+</section>
+
+<section id="courses" style="margin-bottom:25px">
+<h2 class="section-title">مدیریت دوره‌ها</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<h3 style="color:var(--brown);font-size:15px">دوره‌های آموزشی</h3>
+<p style="font-size:12px;color:var(--muted);line-height:2">
+ایجاد دوره جدید، ویرایش عنوان و توضیحات، تعیین قیمت و مدیریت وضعیت انتشار.
+</p>
+<button type="button" style="background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px;font-family:inherit">
+افزودن دوره جدید
+</button>
+</div>
+</section>
+
+<section id="content" style="margin-bottom:25px">
+<h2 class="section-title">مدیریت محتوای آموزشی</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:12px;color:var(--muted);line-height:2">
+مدیریت درس‌ها، فایل‌های صوتی، ویدئوها و تمرین‌های آموزشی در این قسمت انجام خواهد شد.
+</p>
+</div>
+</section>
+<section id="orders" style="margin-bottom:25px">
+<h2 class="section-title">مدیریت سفارش‌ها و پرداخت‌ها</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:12px;color:var(--muted);line-height:2">
+نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.
+</p>
+</div>
+</section>
+
+<section id="reports" style="margin-bottom:25px">
+<h2 class="section-title">گزارش‌ها و آمار</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:12px;color:var(--muted);line-height:2">
+گزارش ثبت‌نام‌ها، فروش دوره‌ها، میزان پیشرفت هنرجویان و عملکرد آموزشی.
+</p>
+</div>
+</section>
+
+<section id="settings" style="margin-bottom:25px">
+<h2 class="section-title">تنظیمات سامانه</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:12px;color:var(--muted);line-height:2">
+تنظیم اطلاعات مدرس، مشخصات سایت، مدیریت دسترسی‌ها و تنظیمات امنیتی.
+</p>
+</div>
+</section>
+
+<footer style="text-align:center;padding:20px;color:var(--muted);font-size:11px">
+© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.
+</footer>
+</main>
+</div>
+</body>
+</html>
