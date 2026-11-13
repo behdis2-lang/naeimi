@@ -214,7 +214,7 @@ async function loadCourses() {
     container.appendChild(item);
   });
 }
-
+  
 function showAddCourseForm() {
   const container = document.getElementById('courseFormContainer');
 
@@ -224,21 +224,50 @@ function showAddCourseForm() {
       <form id="newCourseForm">
         <div class="form-field">
           <label for="courseTitle">عنوان دوره</label>
-          <input id="courseTitle" type="text" placeholder="مثلاً مسیر آگاهی و بیداری" required>
+          <input id="courseTitle" type="text" required>
         </div>
+
         <div class="form-field">
           <label for="courseDescription">توضیحات دوره</label>
-          <textarea id="courseDescription" placeholder="توضیحات دوره را وارد کنید"></textarea>
+          <textarea id="courseDescription"></textarea>
         </div>
+
         <div class="form-field">
           <label for="coursePrice">قیمت دوره</label>
-          <input id="coursePrice" type="number" min="0" step="0.01" placeholder="مثلاً 1000" required>
+          <input id="coursePrice" type="number" min="0" step="0.01" required>
         </div>
+
         <div class="form-field">
-          <label><input id="coursePublished" type="checkbox"> انتشار دوره برای هنرجویان</label>
+          <label for="courseImage">تصویر دوره</label>
+          <input id="courseImage" type="file"
+            accept="image/jpeg,image/png,image/webp">
         </div>
-        <button type="submit" class="primary-btn" id="saveCourseBtn">ذخیره دوره</button>
-        <button type="button" class="secondary-btn" id="cancelCourseBtn">انصراف</button>
+
+        <div class="form-field">
+          <label for="courseAudio">فایل صوتی دوره</label>
+          <input id="courseAudio" type="file"
+            accept="audio/mpeg,audio/mp4,audio/wav">
+        </div>
+
+        <div class="form-field">
+          <label for="courseVideo">ویدئوی دوره</label>
+          <input id="courseVideo" type="file"
+            accept="video/mp4,video/webm">
+        </div>
+
+        <div class="form-field">
+          <label>
+            <input id="coursePublished" type="checkbox">
+            انتشار دوره برای هنرجویان
+          </label>
+        </div>
+
+        <button type="submit" class="primary-btn" id="saveCourseBtn">
+          ذخیره دوره
+        </button>
+        <button type="button" class="secondary-btn" id="cancelCourseBtn">
+          انصراف
+        </button>
         <p id="courseFormMessage" class="status-message"></p>
       </form>
     </div>
@@ -247,6 +276,138 @@ function showAddCourseForm() {
   document.getElementById('cancelCourseBtn').addEventListener('click', () => {
     container.replaceChildren();
   });
+
+  document.getElementById('newCourseForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const title = document.getElementById('courseTitle').value.trim();
+    const description = document.getElementById('courseDescription').value.trim();
+    const priceValue = document.getElementById('coursePrice').value;
+    const isPublished = document.getElementById('coursePublished').checked;
+
+    const files = {
+      image: document.getElementById('courseImage').files[0],
+      audio: document.getElementById('courseAudio').files[0],
+      video: document.getElementById('courseVideo').files[0]
+    };
+
+    const allowedTypes = {
+      image: ['image/jpeg', 'image/png', 'image/webp'],
+      audio: ['audio/mpeg', 'audio/mp4', 'audio/wav'],
+      video: ['video/mp4', 'video/webm']
+    };
+
+    const message = document.getElementById('courseFormMessage');
+    const saveButton = document.getElementById('saveCourseBtn');
+
+    if (!title || priceValue === '' ||
+        !Number.isFinite(Number(priceValue)) || Number(priceValue) < 0) {
+      message.textContent = 'عنوان و قیمت معتبر را وارد کنید.';
+      return;
+    }
+
+    for (const type of ['image', 'audio', 'video']) {
+      const file = files[type];
+      if (!file) continue;
+
+      if (!allowedTypes[type].includes(file.type)) {
+        message.textContent = 'فرمت فایل انتخاب‌شده مجاز نیست.';
+        return;
+      }
+
+      if (file.size > 50 * 1024 * 1024) {
+        message.textContent = 'حجم هر فایل نباید بیشتر از ۵۰ مگابایت باشد.';
+        return;
+      }
+    }
+
+    saveButton.disabled = true;
+    message.textContent = 'در حال ثبت دوره...';
+
+    const { data: course, error: insertError } = await supabase
+      .from('courses')
+      .insert({
+        title,
+        description,
+        price: Number(priceValue),
+        is_published: isPublished
+      })
+      .select('id')
+      .single();
+
+    if (insertError) {
+      message.textContent = 'خطا در ثبت دوره: ' + insertError.message;
+      saveButton.disabled = false;
+      return;
+    }
+
+    const paths = {
+      cover_image_path: null,
+      audio_path: null,
+      video_path: null
+    };
+
+    const uploadItems = [
+      { key: 'image', column: 'cover_image_path', prefix: 'image' },
+      { key: 'audio', column: 'audio_path', prefix: 'audio' },
+      { key: 'video', column: 'video_path', prefix: 'video' }
+    ];
+
+    for (const item of uploadItems) {
+      const file = files[item.key];
+      if (!file) continue;
+
+      const originalExtension = file.name.split('.').pop().toLowerCase();
+      const extension = /^[a-z0-9]{1,8}$/.test(originalExtension)
+        ? originalExtension : 'bin';
+
+      const filePath = `${course.id}/${item.prefix}-${Date.now()}.${extension}`;
+
+      message.textContent = 'در حال بارگذاری فایل...';
+
+      const { error: uploadError } = await supabase.storage
+        .from('course-media')
+        .upload(filePath, file, {
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (uploadError) {
+        message.textContent =
+          'دوره ثبت شد اما بارگذاری فایل ناموفق بود: ' + uploadError.message;
+        saveButton.disabled = false;
+        await loadCourses();
+        return;
+      }
+
+      paths[item.column] = filePath;
+    }
+
+    if (Object.values(paths).some(Boolean)) {
+      message.textContent = 'در حال ثبت مسیر فایل‌ها...';
+
+      const { error: updateError } = await supabase
+        .from('courses')
+        .update(paths)
+        .eq('id', course.id);
+
+      if (updateError) {
+        message.textContent = 'خطا در ثبت مسیر فایل‌ها: ' + updateError.message;
+        saveButton.disabled = false;
+        await loadCourses();
+        return;
+      }
+    }
+
+    message.textContent = 'دوره و فایل‌ها با موفقیت ذخیره شدند.';
+    await loadCourses();
+
+    setTimeout(() => {
+      container.replaceChildren();
+    }, 1800);
+  });
+}
+
 
   document.getElementById('newCourseForm').addEventListener('submit', async (event) => {
     event.preventDefault();
