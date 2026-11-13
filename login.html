@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ورود و ثبت‌نام | آگاهی و بیداری معنوی</title>
+<style>
+:root{
+--cream:#f6efdf;
+--paper:#fffaf0;
+--gold:#bd9652;
+--brown:#705638;
+--ink:#403426;
+--muted:#796b58;
+--line:#e8dcc7;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+min-height:100vh;
+font-family:Tahoma,Arial,sans-serif;
+color:var(--ink);
+background:linear-gradient(135deg,#f6efdf,#eee1c9);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:24px 14px;
+}
+.container{width:100%;max-width:440px}
+.brand{text-align:center;margin-bottom:22px}
+.brand-mark{
+width:58px;height:58px;margin:0 auto 12px;
+border-radius:50%;display:grid;place-items:center;
+background:linear-gradient(145deg,#bd9652,#8b7048);
+color:white;font-size:25px;
+}
+.brand h1{font-size:23px;color:var(--brown);margin:0 0 9px}
+.brand p{font-size:13px;color:var(--muted);margin:0}
+.card{
+background:var(--paper);border:1px solid var(--line);
+border-radius:22px;padding:26px 23px;
+box-shadow:0 15px 45px rgba(91,67,34,.10);
+}
+.tabs{display:flex;gap:8px;margin-bottom:25px}
+.tab{
+flex:1;border:1px solid var(--line);border-radius:10px;
+padding:12px;background:#f8f1e4;color:var(--brown);
+font-family:inherit;font-size:14px;cursor:pointer;
+}
+.tab.active{background:var(--gold);color:white;border-color:var(--gold)}
+h2{font-size:19px;margin:0 0 8px;color:var(--brown)}
+.desc{font-size:12px;color:var(--muted);line-height:2;margin:0 0 22px}
+.field{margin-bottom:16px}
+label{display:block;font-size:13px;margin-bottom:8px}
+input{
+width:100%;padding:14px 13px;border:1px solid var(--line);
+border-radius:10px;background:#fffdf8;font-family:inherit;
+font-size:14px;color:var(--ink);outline:none;
+}
+input:focus{border-color:var(--gold)}
+.primary{
+width:100%;border:0;border-radius:10px;padding:14px;
+background:linear-gradient(135deg,#bd9652,#8b7048);
+color:white;font-family:inherit;font-size:15px;cursor:pointer;
+margin-top:7px;
+}
+.links{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+.link{
+border:0;background:none;color:var(--brown);
+font-family:inherit;font-size:12px;cursor:pointer;
+}
+.notice{
+display:none;margin-top:15px;padding:12px;border-radius:9px;
+background:#f2e8d5;color:#705638;font-size:12px;line-height:2;
+}
+.footer{text-align:center;font-size:11px;color:var(--muted);margin-top:20px}
+.back{display:block;text-align:center;margin-top:17px;color:var(--brown);font-size:13px;text-decoration:none}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main class="container">
+<header class="brand">
+<div class="brand-mark">✧</div>
+<h1>آگاهی و بیداری معنوی</h1>
+<p>به مسیر شناخت درون خوش آمدی</p>
+</header>
+<section class="card">
+<div class="tabs">
+<button class="tab active" id="loginTab" onclick="showPage('login')">ورود</button>
+<button class="tab" id="registerTab" onclick="showPage('register')">ثبت‌نام</button>
+</div>
+<form id="loginForm">
+<h2>خوش برگشتی!</h2>
+<p class="desc">برای ورود به حساب کاربری اطلاعاتت را وارد کن.</p>
+<div class="field">
+<label for="loginEmail">ایمیل یا شماره موبایل</label>
+<input id="loginEmail" type="text" placeholder="ایمیل یا شماره موبایل" required>
+</div>
+<div class="field">
+<label for="loginPassword">رمز عبور</label>
+<input id="loginPassword" type="password" placeholder="رمز عبور" required>
+</div>
+<button class="primary" type="submit">ورود به حساب کاربری</button>
+<div class="links">
+<button class="link" type="button" onclick="showPage('forgot')">فراموشی رمز عبور؟</button>
+<button class="link" type="button" onclick="showPage('register')">ثبت‌نام</button>
+</div>
+</form>
+
+<form id="registerForm" class="hidden">
+<h2>ایجاد حساب کاربری</h2>
+<p class="desc">برای آغاز مسیر یادگیری، اطلاعات زیر را وارد کن.</p>
+<div class="field">
+<label for="fullName">نام و نام خانوادگی</label>
+<input id="fullName" type="text" placeholder="نام کامل" required>
+</div>
+<div class="field">
+<label for="registerEmail">ایمیل</label>
+<input id="registerEmail" type="email" placeholder="example@email.com" required>
+</div>
+<div class="field">
+<label for="registerPhone">شماره موبایل</label>
+<input id="registerPhone" type="tel" placeholder="شماره موبایل" required>
+</div>
+<div class="field">
+<label for="registerPassword">انتخاب رمز عبور</label>
+<input id="registerPassword" type="password" minlength="8" placeholder="حداقل ۸ کاراکتر" required>
+</div>
+<button class="primary" type="submit">ایجاد حساب کاربری</button>
+<div class="links">
+<button class="link" type="button" onclick="showPage('login')">بازگشت به ورود</button>
+</div>
+</form>
+<form id="forgotForm" class="hidden">
+<h2>بازیابی رمز عبور</h2>
+<p class="desc">ایمیل خود را برای بازیابی رمز عبور وارد کن.</p>
+<div class="field">
+<label for="forgotEmail">آدرس ایمیل</label>
+<input id="forgotEmail" type="email" placeholder="example@email.com" required>
+</div>
+<button class="primary" type="submit">درخواست بازیابی رمز</button>
+<div class="links">
+<button class="link" type="button" onclick="showPage('login')">بازگشت به ورود</button>
+</div>
+</form>
+
+<div class="notice" id="notice"></div>
+</section>
+
+<a class="back" href="index.html">← بازگشت به صفحه اصلی سایت</a>
+<footer class="footer">© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.</footer>
+</main>
+<script>
+function showPage(page){
+document.getElementById('loginForm').classList.toggle('hidden',page!=='login');
+document.getElementById('registerForm').classList.toggle('hidden',page!=='register');
+document.getElementById('forgotForm').classList.toggle('hidden',page!=='forgot');
+document.getElementById('loginTab').classList.toggle('active',page==='login');
+document.getElementById('registerTab').classList.toggle('active',page==='register');
+document.getElementById('notice').style.display='none';
+}
+
+function demoMessage(message){
+const notice=document.getElementById('notice');
+notice.textContent=message;
+notice.style.display='block';
+}
+
+document.getElementById('loginForm').addEventListener('submit',function(e){
+e.preventDefault();
+demoMessage('فرم ورود آماده است؛ برای ورود واقعی باید سامانه احراز هویت متصل شود.');
+});
+
+document.getElementById('registerForm').addEventListener('submit',function(e){
+e.preventDefault();
+demoMessage('فرم ثبت‌نام آماده است؛ ذخیره اطلاعات پس از اتصال امن به سرور فعال می‌شود.');
+});
+
+document.getElementById('forgotForm').addEventListener('submit',function(e){
+e.preventDefault();
+demoMessage('بازیابی رمز پس از اتصال سرویس ایمیل فعال می‌شود.');
+});
+</script>
+</body>
+</html>
