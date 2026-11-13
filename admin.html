@@ -5,132 +5,303 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>پنل مدیریت | آگاهی و بیداری معنوی</title>
+
 <style>
 :root{
---cream:#f6efdf;
---paper:#fffaf0;
---gold:#bd9652;
---brown:#705638;
---ink:#403426;
---muted:#796b58;
---line:#e8dcc7;
+  --cream:#f6efdf;
+  --paper:#fffaf0;
+  --gold:#bd9652;
+  --brown:#705638;
+  --ink:#403426;
+  --muted:#796b58;
+  --line:#e8dcc7;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:var(--ink)}
-.header{background:var(--paper);padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+}
+.header{
+  background:var(--paper);
+  padding:18px 22px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 .brand{color:var(--brown);font-weight:bold;font-size:17px}
 .header a{color:var(--brown);text-decoration:none;font-size:12px}
-.layout{max-width:1150px;margin:28px auto;padding:0 16px;display:grid;grid-template-columns:240px 1fr;gap:22px}
-.sidebar{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;height:max-content}
-.profile{text-align:center;padding:15px 5px 22px;border-bottom:1px solid var(--line)}
-.avatar{width:65px;height:65px;border-radius:50%;background:linear-gradient(145deg,#bd9652,#8b7048);color:white;display:grid;place-items:center;font-size:25px;margin:auto auto 12px}
+.layout{
+  max-width:1150px;
+  margin:28px auto;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:240px 1fr;
+  gap:22px;
+}
+.sidebar{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  height:max-content;
+}
+.profile{
+  text-align:center;
+  padding:15px 5px 22px;
+  border-bottom:1px solid var(--line);
+}
+.avatar{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#bd9652,#8b7048);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  margin:auto auto 12px;
+}
 .profile h3{font-size:15px;margin:0 0 7px}
 .profile p{font-size:11px;color:var(--muted);margin:0}
 .menu{padding-top:15px;display:grid;gap:7px}
-.menu a{display:block;padding:12px;border-radius:9px;text-decoration:none;color:var(--brown);font-size:13px}
+.menu a{
+  display:block;
+  padding:12px;
+  border-radius:9px;
+  text-decoration:none;
+  color:var(--brown);
+  font-size:13px;
+}
 .menu a.active,.menu a:hover{background:#f1e5cf}
 .main{min-width:0}
-.welcome{background:linear-gradient(120deg,#8b7048,#bd9652);border-radius:18px;padding:27px;color:white;margin-bottom:20px}
+.welcome{
+  background:linear-gradient(120deg,#8b7048,#bd9652);
+  border-radius:18px;
+  padding:27px;
+  color:white;
+  margin-bottom:20px;
+}
 .welcome h1{font-size:22px;margin:0 0 12px}
 .welcome p{font-size:13px;line-height:2;margin:0}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px}
-.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:17px}
-.stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
+  margin-bottom:24px;
+}
+.stat{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+}
+.stat strong{
+  display:block;
+  font-size:23px;
+  color:var(--brown);
+  margin-bottom:7px;
+}
 .stat span{font-size:11px;color:var(--muted)}
 .section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
-.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-bottom:15px}
+.panel{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:15px;
+}
 button{cursor:pointer;font-family:inherit}
-.primary-btn{background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px}
-.secondary-btn{background:#eee3d0;color:var(--brown);border:0;border-radius:9px;padding:11px 17px}
+button:disabled{opacity:.6;cursor:not-allowed}
+.primary-btn{
+  background:var(--gold);
+  color:white;
+  border:0;
+  border-radius:9px;
+  padding:11px 17px;
+}
+.secondary-btn{
+  background:#eee3d0;
+  color:var(--brown);
+  border:0;
+  border-radius:9px;
+  padding:11px 17px;
+}
 .form-field{margin:14px 0}
-.form-field label{display:block;font-size:12px;margin-bottom:7px;color:var(--brown)}
-.form-field input:not([type="checkbox"]),.form-field textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit;font-size:13px}
+.form-field label{
+  display:block;
+  font-size:12px;
+  margin-bottom:7px;
+  color:var(--brown);
+}
+.form-field input:not([type="checkbox"]),
+.form-field textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:white;
+  font-family:inherit;
+  font-size:13px;
+}
 .form-field textarea{min-height:90px;resize:vertical}
 .form-field input[type="checkbox"]{width:auto}
-.course-item{padding:14px 0;border-bottom:1px solid var(--line)}
-.course-item p{font-size:12px;color:var(--muted);line-height:2}
-.status-message{font-size:12px;line-height:2;margin-top:12px}
-footer{text-align:center;padding:20px;color:var(--muted);font-size:11px}
+.course-item{
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+.course-item:last-child{border-bottom:0}
+.course-item p{
+  font-size:12px;
+  color:var(--muted);
+  line-height:2;
+  overflow-wrap:anywhere;
+}
+.status-message{
+  font-size:12px;
+  line-height:2;
+  margin-top:12px;
+  overflow-wrap:anywhere;
+}
+footer{
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  font-size:11px;
+}
 @media(max-width:700px){
-.layout{grid-template-columns:1fr;margin:15px auto}
-.sidebar{padding:12px}
-.menu{grid-template-columns:repeat(2,1fr)}
-.stats{grid-template-columns:1fr}
-.header{padding:14px}
-.brand{font-size:13px}
-.welcome h1{font-size:18px}
+  .layout{grid-template-columns:1fr;margin:15px auto}
+  .sidebar{padding:12px}
+  .menu{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:1fr}
+  .header{padding:14px}
+  .brand{font-size:13px}
+  .welcome h1{font-size:18px}
 }
 </style>
 </head>
+
 <body>
+
 <header class="header">
-<div class="brand">✧ مدیریت آگاهی و بیداری معنوی</div>
-<a href="index.html">بازگشت به سایت ←</a>
+  <div class="brand">✧ مدیریت آگاهی و بیداری معنوی</div>
+  <a href="index.html">بازگشت به سایت ←</a>
 </header>
+
 <div class="layout">
+
 <aside class="sidebar">
-<div class="profile">
-<div class="avatar">م</div>
-<h3>مدیریت مدرس</h3>
-<p>مدیریت سامانه آموزشی</p>
-</div>
-<nav class="menu">
-<a class="active" href="#dashboard">داشبورد مدیریت</a>
-<a href="#students">هنرجویان</a>
-<a href="#courses">دوره‌ها</a>
-<a href="#content">محتوای آموزشی</a>
-<a href="#orders">سفارش‌ها</a>
-<a href="#reports">گزارش‌ها</a>
-<a href="#settings">تنظیمات</a>
-<a href="index.html">خروج</a>
-</nav>
+  <div class="profile">
+    <div class="avatar">م</div>
+    <h3>مدیریت مدرس</h3>
+    <p>مدیریت سامانه آموزشی</p>
+  </div>
+
+  <nav class="menu">
+    <a class="active" href="#dashboard">داشبورد مدیریت</a>
+    <a href="#students">هنرجویان</a>
+    <a href="#courses">دوره‌ها</a>
+    <a href="#content">محتوای آموزشی</a>
+    <a href="#orders">سفارش‌ها</a>
+    <a href="#reports">گزارش‌ها</a>
+    <a href="#settings">تنظیمات</a>
+    <a href="#" id="logoutBtn">خروج از حساب</a>
+  </nav>
 </aside>
+
 <main class="main">
+
 <section class="welcome" id="dashboard">
-<h1>خوش آمدی، مهدی نعیمی 🌱</h1>
-<p>از این بخش می‌توانی بخش‌های مختلف سامانه آموزشی خود را مدیریت کنی.</p>
+  <h1>خوش آمدی، مهدی نعیمی 🌱</h1>
+  <p>از این بخش می‌توانی بخش‌های مختلف سامانه آموزشی خود را مدیریت کنی.</p>
 </section>
+
 <section class="stats">
-<div class="stat"><strong>۰</strong><span>هنرجویان ثبت‌شده</span></div>
-<div class="stat"><strong>۰</strong><span>دوره‌های فعال</span></div>
-<div class="stat"><strong>۰</strong><span>سفارش‌ها</span></div>
+  <div class="stat">
+    <strong>۰</strong>
+    <span>هنرجویان ثبت‌شده</span>
+  </div>
+  <div class="stat">
+    <strong id="courseCount">۰</strong>
+    <span>دوره‌های ثبت‌شده</span>
+  </div>
+  <div class="stat">
+    <strong>۰</strong>
+    <span>سفارش‌ها</span>
+  </div>
 </section>
+
 <section id="students" style="margin-bottom:25px">
-<h2 class="section-title">مدیریت هنرجویان</h2>
-<div class="panel">
-<p style="font-size:13px;color:var(--muted);line-height:2">در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.</p>
-</div>
+  <h2 class="section-title">مدیریت هنرجویان</h2>
+  <div class="panel">
+    <p style="font-size:13px;color:var(--muted);line-height:2">
+      در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.
+    </p>
+  </div>
 </section>
+
 <section id="courses" style="margin-bottom:25px">
-<h2 class="section-title">مدیریت دوره‌ها</h2>
-<div class="panel">
-<h3 style="color:var(--brown);font-size:15px">دوره‌های آموزشی</h3>
-<p style="font-size:12px;color:var(--muted);line-height:2">ایجاد دوره جدید، تعیین قیمت، توضیحات و وضعیت انتشار.</p>
-<button type="button" class="primary-btn" id="addCourseBtn">افزودن دوره جدید</button>
-</div>
-<div id="courseFormContainer"></div>
-<div id="courseList" class="panel">در حال دریافت دوره‌ها...</div>
+  <h2 class="section-title">مدیریت دوره‌ها</h2>
+
+  <div class="panel">
+    <h3 style="color:var(--brown);font-size:15px">دوره‌های آموزشی</h3>
+    <p style="font-size:12px;color:var(--muted);line-height:2">
+      ایجاد دوره جدید، تعیین قیمت، توضیحات و بارگذاری فایل‌ها.
+    </p>
+    <button type="button" class="primary-btn" id="addCourseBtn">
+      افزودن دوره جدید
+    </button>
+  </div>
+
+  <div id="courseFormContainer"></div>
+  <div id="courseList" class="panel">در حال دریافت دوره‌ها...</div>
 </section>
+
 <section id="content" style="margin-bottom:25px">
-<h2 class="section-title">مدیریت محتوای آموزشی</h2>
-<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">مدیریت درس‌ها، فایل‌های صوتی، ویدئوها و تمرین‌های آموزشی در این قسمت انجام خواهد شد.</p></div>
+  <h2 class="section-title">مدیریت محتوای آموزشی</h2>
+  <div class="panel">
+    <p style="font-size:12px;color:var(--muted);line-height:2">
+      مدیریت درس‌ها، فایل‌های صوتی، ویدئوها و تمرین‌های آموزشی در این قسمت انجام خواهد شد.
+    </p>
+  </div>
 </section>
+
 <section id="orders" style="margin-bottom:25px">
-<h2 class="section-title">مدیریت سفارش‌ها و پرداخت‌ها</h2>
-<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.</p></div>
+  <h2 class="section-title">مدیریت سفارش‌ها و پرداخت‌ها</h2>
+  <div class="panel">
+    <p style="font-size:12px;color:var(--muted);line-height:2">
+      نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.
+    </p>
+  </div>
 </section>
+
 <section id="reports" style="margin-bottom:25px">
-<h2 class="section-title">گزارش‌ها و آمار</h2>
-<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">گزارش ثبت‌نام‌ها، فروش دوره‌ها، میزان پیشرفت هنرجویان و عملکرد آموزشی.</p></div>
+  <h2 class="section-title">گزارش‌ها و آمار</h2>
+  <div class="panel">
+    <p style="font-size:12px;color:var(--muted);line-height:2">
+      گزارش ثبت‌نام‌ها، فروش دوره‌ها و میزان پیشرفت هنرجویان.
+    </p>
+  </div>
 </section>
+
 <section id="settings" style="margin-bottom:25px">
-<h2 class="section-title">تنظیمات سامانه</h2>
-<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">تنظیم اطلاعات مدرس، مشخصات سایت، مدیریت دسترسی‌ها و تنظیمات امنیتی.</p></div>
+  <h2 class="section-title">تنظیمات سامانه</h2>
+  <div class="panel">
+    <p style="font-size:12px;color:var(--muted);line-height:2">
+      تنظیم اطلاعات مدرس، مشخصات سایت و مدیریت دسترسی‌ها.
+    </p>
+  </div>
 </section>
+
 <footer>© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.</footer>
+
 </main>
 </div>
+
 <script type="module">
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const supabase = createClient(
@@ -140,10 +311,23 @@ const supabase = createClient(
 
 document.documentElement.style.visibility = 'hidden';
 
-async function protectAdminPanel() {
-  const { data: { session }, error } = await supabase.auth.getSession();
+const BUCKET = 'course-media';
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-  if (error || !session) {
+const allowedTypes = {
+  image: ['image/jpeg', 'image/png', 'image/webp'],
+  audio: ['audio/mpeg', 'audio/mp4', 'audio/wav'],
+  video: ['video/mp4', 'video/webm']
+};
+
+function formatNumber(value) {
+  return new Intl.NumberFormat('fa-IR').format(value);
+}
+
+async function protectAdminPanel() {
+  const { data, error } = await supabase.auth.getSession();
+
+  if (error || !data.session) {
     window.location.replace('login.html');
     return false;
   }
@@ -151,10 +335,11 @@ async function protectAdminPanel() {
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('role')
-    .eq('id', session.user.id)
+    .eq('id', data.session.user.id)
     .single();
 
   if (profileError || !profile || profile.role !== 'admin') {
+    await supabase.auth.signOut();
     window.location.replace('login.html');
     return false;
   }
@@ -179,15 +364,18 @@ async function loadCourses() {
 
   container.replaceChildren();
 
+  document.getElementById('courseCount').textContent =
+    formatNumber(data ? data.length : 0);
+
   const heading = document.createElement('h3');
   heading.textContent = 'فهرست دوره‌های ثبت‌شده';
   heading.style.color = 'var(--brown)';
   container.appendChild(heading);
 
   if (!data || data.length === 0) {
-    const message = document.createElement('p');
-    message.textContent = 'هنوز دوره‌ای ثبت نشده است.';
-    container.appendChild(message);
+    const empty = document.createElement('p');
+    empty.textContent = 'هنوز دوره‌ای ثبت نشده است.';
+    container.appendChild(empty);
     return;
   }
 
@@ -196,10 +384,11 @@ async function loadCourses() {
     item.className = 'course-item';
 
     const title = document.createElement('strong');
-    title.textContent = course.title;
+    title.textContent = course.title || 'بدون عنوان';
 
     const details = document.createElement('p');
-    details.textContent = 'قیمت: ' + course.price +
+    details.textContent =
+      'قیمت: ' + formatNumber(Number(course.price) || 0) +
       ' | وضعیت: ' +
       (course.is_published ? 'منتشر شده' : 'پیش‌نویس');
 
@@ -211,17 +400,26 @@ async function loadCourses() {
       item.appendChild(description);
     }
 
+    const files = document.createElement('p');
+    files.textContent =
+      'تصویر: ' + (course.cover_image_path ? 'ثبت شده' : 'ندارد') +
+      ' | صوت: ' + (course.audio_path ? 'ثبت شده' : 'ندارد') +
+      ' | ویدئو: ' + (course.video_path ? 'ثبت شده' : 'ندارد');
+
+    item.appendChild(files);
     container.appendChild(item);
   });
 }
-  
+
 function showAddCourseForm() {
   const container = document.getElementById('courseFormContainer');
 
   container.innerHTML = `
     <div class="panel">
       <h3 style="color:var(--brown);font-size:15px">ایجاد دوره جدید</h3>
+
       <form id="newCourseForm">
+
         <div class="form-field">
           <label for="courseTitle">عنوان دوره</label>
           <input id="courseTitle" type="text" required>
@@ -239,20 +437,17 @@ function showAddCourseForm() {
 
         <div class="form-field">
           <label for="courseImage">تصویر دوره</label>
-          <input id="courseImage" type="file"
-            accept="image/jpeg,image/png,image/webp">
+          <input id="courseImage" type="file" accept="image/jpeg,image/png,image/webp">
         </div>
 
         <div class="form-field">
           <label for="courseAudio">فایل صوتی دوره</label>
-          <input id="courseAudio" type="file"
-            accept="audio/mpeg,audio/mp4,audio/wav">
+          <input id="courseAudio" type="file" accept="audio/mpeg,audio/mp4,audio/wav">
         </div>
 
         <div class="form-field">
           <label for="courseVideo">ویدئوی دوره</label>
-          <input id="courseVideo" type="file"
-            accept="video/mp4,video/webm">
+          <input id="courseVideo" type="file" accept="video/mp4,video/webm">
         </div>
 
         <div class="form-field">
@@ -265,9 +460,11 @@ function showAddCourseForm() {
         <button type="submit" class="primary-btn" id="saveCourseBtn">
           ذخیره دوره
         </button>
+
         <button type="button" class="secondary-btn" id="cancelCourseBtn">
           انصراف
         </button>
+
         <p id="courseFormMessage" class="status-message"></p>
       </form>
     </div>
@@ -277,68 +474,68 @@ function showAddCourseForm() {
     container.replaceChildren();
   });
 
-  document.getElementById('newCourseForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+  document.getElementById('newCourseForm').addEventListener('submit', saveCourse);
+}
 
-    const title = document.getElementById('courseTitle').value.trim();
-    const description = document.getElementById('courseDescription').value.trim();
-    const priceValue = document.getElementById('coursePrice').value;
-    const isPublished = document.getElementById('coursePublished').checked;
+async function saveCourse(event) {
+  event.preventDefault();
 
-    const files = {
-      image: document.getElementById('courseImage').files[0],
-      audio: document.getElementById('courseAudio').files[0],
-      video: document.getElementById('courseVideo').files[0]
-    };
+  const title = document.getElementById('courseTitle').value.trim();
+  const description = document.getElementById('courseDescription').value.trim();
+  const priceValue = document.getElementById('coursePrice').value;
+  const isPublished = document.getElementById('coursePublished').checked;
 
-    const allowedTypes = {
-      image: ['image/jpeg', 'image/png', 'image/webp'],
-      audio: ['audio/mpeg', 'audio/mp4', 'audio/wav'],
-      video: ['video/mp4', 'video/webm']
-    };
+  const files = {
+    image: document.getElementById('courseImage').files[0],
+    audio: document.getElementById('courseAudio').files[0],
+    video: document.getElementById('courseVideo').files[0]
+  };
 
-    const message = document.getElementById('courseFormMessage');
-    const saveButton = document.getElementById('saveCourseBtn');
+  const message = document.getElementById('courseFormMessage');
+  const saveButton = document.getElementById('saveCourseBtn');
 
-    if (!title || priceValue === '' ||
-        !Number.isFinite(Number(priceValue)) || Number(priceValue) < 0) {
-      message.textContent = 'عنوان و قیمت معتبر را وارد کنید.';
+  if (!title || priceValue === '' ||
+      !Number.isFinite(Number(priceValue)) ||
+      Number(priceValue) < 0) {
+    message.textContent = 'عنوان و قیمت معتبر را وارد کنید.';
+    return;
+  }
+
+  for (const type of ['image', 'audio', 'video']) {
+    const file = files[type];
+
+    if (!file) continue;
+
+    if (!allowedTypes[type].includes(file.type)) {
+      message.textContent = 'فرمت فایل انتخاب‌شده مجاز نیست.';
       return;
     }
 
-    for (const type of ['image', 'audio', 'video']) {
-      const file = files[type];
-      if (!file) continue;
-
-      if (!allowedTypes[type].includes(file.type)) {
-        message.textContent = 'فرمت فایل انتخاب‌شده مجاز نیست.';
-        return;
-      }
-
-      if (file.size > 50 * 1024 * 1024) {
-        message.textContent = 'حجم هر فایل نباید بیشتر از ۵۰ مگابایت باشد.';
-        return;
-      }
+    if (file.size > MAX_FILE_SIZE) {
+      message.textContent = 'حجم هر فایل نباید بیشتر از ۵۰ مگابایت باشد.';
+      return;
     }
+  }
 
-    saveButton.disabled = true;
+  saveButton.disabled = true;
+
+  try {
     message.textContent = 'در حال ثبت دوره...';
 
+    // دوره ابتدا به‌صورت پیش‌نویس ساخته می‌شود.
     const { data: course, error: insertError } = await supabase
       .from('courses')
       .insert({
         title,
         description,
         price: Number(priceValue),
-        is_published: isPublished
+        is_published: false
       })
       .select('id')
       .single();
 
     if (insertError) {
-      message.textContent = 'خطا در ثبت دوره: ' + insertError.message;
-      saveButton.disabled = false;
-      return;
+      throw new Error('خطا در ثبت دوره: ' + insertError.message);
     }
 
     const paths = {
@@ -346,6 +543,8 @@ function showAddCourseForm() {
       audio_path: null,
       video_path: null
     };
+
+    const uploadedPaths = [];
 
     const uploadItems = [
       { key: 'image', column: 'cover_image_path', prefix: 'image' },
@@ -357,107 +556,98 @@ function showAddCourseForm() {
       const file = files[item.key];
       if (!file) continue;
 
-      const originalExtension = file.name.split('.').pop().toLowerCase();
+      const parts = file.name.split('.');
+      const originalExtension = parts.length > 1
+        ? parts.pop().toLowerCase()
+        : '';
+
       const extension = /^[a-z0-9]{1,8}$/.test(originalExtension)
-        ? originalExtension : 'bin';
+        ? originalExtension
+        : 'bin';
 
-      const filePath = `${course.id}/${item.prefix}-${Date.now()}.${extension}`;
+      const uniqueName = (
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now() + '-' + Math.random().toString(36).slice(2)
+      );
 
-      message.textContent = 'در حال بارگذاری فایل...';
+      const filePath =
+        `${course.id}/${item.prefix}-${uniqueName}.${extension}`;
+
+      message.textContent = 'در حال بارگذاری ' + item.prefix + '...';
 
       const { error: uploadError } = await supabase.storage
-        .from('course-media')
+        .from(BUCKET)
         .upload(filePath, file, {
           contentType: file.type,
           upsert: false
         });
 
       if (uploadError) {
-        message.textContent =
-          'دوره ثبت شد اما بارگذاری فایل ناموفق بود: ' + uploadError.message;
-        saveButton.disabled = false;
-        await loadCourses();
-        return;
+        // در صورت خطا، فایل‌های قبلاً بارگذاری‌شده پاک می‌شوند.
+        if (uploadedPaths.length) {
+          await supabase.storage.from(BUCKET).remove(uploadedPaths);
+        }
+
+        throw new Error(
+          'دوره ساخته شد، اما بارگذاری فایل ناموفق بود: ' +
+          uploadError.message +
+          ' دوره فعلاً پیش‌نویس باقی می‌ماند.'
+        );
       }
 
+      uploadedPaths.push(filePath);
       paths[item.column] = filePath;
     }
 
-    if (Object.values(paths).some(Boolean)) {
-      message.textContent = 'در حال ثبت مسیر فایل‌ها...';
+    message.textContent = 'در حال ثبت اطلاعات فایل‌ها...';
 
-      const { error: updateError } = await supabase
-        .from('courses')
-        .update(paths)
-        .eq('id', course.id);
+    const { error: updateError } = await supabase
+      .from('courses')
+      .update({
+        ...paths,
+        is_published: isPublished
+      })
+      .eq('id', course.id)
+      .select('id')
+      .single();
 
-      if (updateError) {
-        message.textContent = 'خطا در ثبت مسیر فایل‌ها: ' + updateError.message;
-        saveButton.disabled = false;
-        await loadCourses();
-        return;
-      }
+    if (updateError) {
+      throw new Error(
+        'فایل‌ها بارگذاری شدند، اما ثبت مسیر آن‌ها ناموفق بود: ' +
+        updateError.message +
+        ' دوره منتشر نشده باقی می‌ماند.'
+      );
     }
 
     message.textContent = 'دوره و فایل‌ها با موفقیت ذخیره شدند.';
+
     await loadCourses();
 
     setTimeout(() => {
-      container.replaceChildren();
+      document.getElementById('courseFormContainer').replaceChildren();
     }, 1800);
-  });
-}
 
-
-  document.getElementById('newCourseForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const title = document.getElementById('courseTitle').value.trim();
-    const description = document.getElementById('courseDescription').value.trim();
-    const priceValue = document.getElementById('coursePrice').value;
-    const isPublished = document.getElementById('coursePublished').checked;
-
-    const message = document.getElementById('courseFormMessage');
-    const saveButton = document.getElementById('saveCourseBtn');
-
-    if (!title || priceValue === '' || !Number.isFinite(Number(priceValue)) || Number(priceValue) < 0) {
-      message.textContent = 'عنوان و قیمت معتبر را وارد کنید.';
-      return;
-    }
-
-    saveButton.disabled = true;
-    message.textContent = 'در حال ذخیره دوره...';
-
-    const { error } = await supabase
-      .from('courses')
-      .insert({
-        title,
-        description,
-        price: Number(priceValue),
-        is_published: isPublished
-      });
-
-    if (error) {
-      message.textContent = 'خطا در ذخیره دوره: ' + error.message;
-      saveButton.disabled = false;
-      return;
-    }
-
-    message.textContent = 'دوره با موفقیت ذخیره شد.';
-    await loadCourses();
-
-    setTimeout(() => {
-      container.replaceChildren();
-    }, 1200);
-  });
+  } catch (error) {
+    message.textContent = error.message || 'خطای غیرمنتظره رخ داد.';
+    saveButton.disabled = false;
+  }
 }
 
 document.getElementById('addCourseBtn')
   .addEventListener('click', showAddCourseForm);
 
+document.getElementById('logoutBtn')
+  .addEventListener('click', async (event) => {
+    event.preventDefault();
+    await supabase.auth.signOut();
+    window.location.replace('login.html');
+  });
+
 if (await protectAdminPanel()) {
   await loadCourses();
 }
+
 </script>
 </body>
 </html>
