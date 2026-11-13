@@ -185,7 +185,8 @@ border-radius:14px;padding:17px;
 </footer>
 </main>
 </div>
-  <script type="module">
+  
+<script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const supabase = createClient(
@@ -200,7 +201,7 @@ async function protectAdminPanel() {
 
   if (error || !session) {
     window.location.replace('login.html');
-    return;
+    return false;
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -211,13 +212,68 @@ async function protectAdminPanel() {
 
   if (profileError || !profile || profile.role !== 'admin') {
     window.location.replace('login.html');
-    return;
+    return false;
   }
 
   document.documentElement.style.visibility = 'visible';
+  return true;
 }
 
-protectAdminPanel();
+async function loadCourses() {
+  const section = document.getElementById('courses');
+  const container = document.createElement('div');
+
+  container.style.cssText =
+    'background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-top:15px';
+
+  section.appendChild(container);
+  container.textContent = 'در حال دریافت دوره‌ها...';
+
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    container.textContent = 'خطا: ' + error.message;
+    return;
+  }
+
+  container.replaceChildren();
+
+  const heading = document.createElement('h3');
+  heading.textContent = 'فهرست دوره‌های ثبت‌شده';
+  container.appendChild(heading);
+
+  if (!data || data.length === 0) {
+    const message = document.createElement('p');
+    message.textContent = 'هنوز دوره‌ای ثبت نشده است.';
+    container.appendChild(message);
+    return;
+  }
+
+  data.forEach(course => {
+    const item = document.createElement('div');
+    item.style.cssText = 'padding:12px 0;border-bottom:1px solid var(--line)';
+
+    const title = document.createElement('strong');
+    title.textContent = course.title;
+
+    const details = document.createElement('p');
+    details.textContent = 'قیمت: ' + course.price +
+      ' | وضعیت: ' +
+      (course.is_published ? 'منتشر شده' : 'پیش‌نویس');
+
+    item.append(title, details);
+    container.appendChild(item);
+  });
+}
+
+if (await protectAdminPanel()) {
+  await loadCourses();
+}
 </script>
 </body>
 </html>
+
+
