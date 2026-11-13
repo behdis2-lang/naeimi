@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -15,70 +16,50 @@
 --line:#e8dcc7;
 }
 *{box-sizing:border-box}
-body{
-margin:0;
-font-family:Tahoma,Arial,sans-serif;
-background:var(--cream);
-color:var(--ink);
-}
-.header{
-background:var(--paper);
-padding:18px 22px;
-border-bottom:1px solid var(--line);
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+.header{background:var(--paper);padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .brand{color:var(--brown);font-weight:bold;font-size:17px}
 .header a{color:var(--brown);text-decoration:none;font-size:12px}
-.layout{
-max-width:1150px;
-margin:28px auto;
-padding:0 16px;
-display:grid;
-grid-template-columns:240px 1fr;
-gap:22px;
-}
-.sidebar{
-background:var(--paper);
-border:1px solid var(--line);
-border-radius:18px;
-padding:20px;
-height:max-content;
-}
+.layout{max-width:1150px;margin:28px auto;padding:0 16px;display:grid;grid-template-columns:240px 1fr;gap:22px}
+.sidebar{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;height:max-content}
 .profile{text-align:center;padding:15px 5px 22px;border-bottom:1px solid var(--line)}
-.avatar{
-width:65px;height:65px;border-radius:50%;
-background:linear-gradient(145deg,#bd9652,#8b7048);
-color:white;display:grid;place-items:center;
-font-size:25px;margin:auto auto 12px;
-}
+.avatar{width:65px;height:65px;border-radius:50%;background:linear-gradient(145deg,#bd9652,#8b7048);color:white;display:grid;place-items:center;font-size:25px;margin:auto auto 12px}
 .profile h3{font-size:15px;margin:0 0 7px}
 .profile p{font-size:11px;color:var(--muted);margin:0}
 .menu{padding-top:15px;display:grid;gap:7px}
-.menu a{
-display:block;padding:12px;border-radius:9px;
-text-decoration:none;color:var(--brown);font-size:13px;
-}
+.menu a{display:block;padding:12px;border-radius:9px;text-decoration:none;color:var(--brown);font-size:13px}
 .menu a.active,.menu a:hover{background:#f1e5cf}
 .main{min-width:0}
-.welcome{
-background:linear-gradient(120deg,#8b7048,#bd9652);
-border-radius:18px;padding:27px;color:white;margin-bottom:20px;
-}
+.welcome{background:linear-gradient(120deg,#8b7048,#bd9652);border-radius:18px;padding:27px;color:white;margin-bottom:20px}
 .welcome h1{font-size:22px;margin:0 0 12px}
 .welcome p{font-size:13px;line-height:2;margin:0}
-.stats{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:13px;margin-bottom:24px;
-}
-.stat{
-background:var(--paper);border:1px solid var(--line);
-border-radius:14px;padding:17px;
-}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:17px}
 .stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
 .stat span{font-size:11px;color:var(--muted)}
 .section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-bottom:15px}
+button{cursor:pointer;font-family:inherit}
+.primary-btn{background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px}
+.secondary-btn{background:#eee3d0;color:var(--brown);border:0;border-radius:9px;padding:11px 17px}
+.form-field{margin:14px 0}
+.form-field label{display:block;font-size:12px;margin-bottom:7px;color:var(--brown)}
+.form-field input:not([type="checkbox"]),.form-field textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit;font-size:13px}
+.form-field textarea{min-height:90px;resize:vertical}
+.form-field input[type="checkbox"]{width:auto}
+.course-item{padding:14px 0;border-bottom:1px solid var(--line)}
+.course-item p{font-size:12px;color:var(--muted);line-height:2}
+.status-message{font-size:12px;line-height:2;margin-top:12px}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:11px}
+@media(max-width:700px){
+.layout{grid-template-columns:1fr;margin:15px auto}
+.sidebar{padding:12px}
+.menu{grid-template-columns:repeat(2,1fr)}
+.stats{grid-template-columns:1fr}
+.header{padding:14px}
+.brand{font-size:13px}
+.welcome h1{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -110,82 +91,45 @@ border-radius:14px;padding:17px;
 <p>از این بخش می‌توانی بخش‌های مختلف سامانه آموزشی خود را مدیریت کنی.</p>
 </section>
 <section class="stats">
-<div class="stat">
-<strong>۰</strong>
-<span>هنرجویان ثبت‌شده</span>
-</div>
-<div class="stat">
-<strong>۰</strong>
-<span>دوره‌های فعال</span>
-</div>
-<div class="stat">
-<strong>۰</strong>
-<span>سفارش‌ها</span>
-</div>
+<div class="stat"><strong>۰</strong><span>هنرجویان ثبت‌شده</span></div>
+<div class="stat"><strong>۰</strong><span>دوره‌های فعال</span></div>
+<div class="stat"><strong>۰</strong><span>سفارش‌ها</span></div>
 </section>
 <section id="students" style="margin-bottom:25px">
 <h2 class="section-title">مدیریت هنرجویان</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:13px;color:var(--muted);line-height:2">
-در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.
-</p>
+<div class="panel">
+<p style="font-size:13px;color:var(--muted);line-height:2">در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.</p>
 </div>
 </section>
-
 <section id="courses" style="margin-bottom:25px">
 <h2 class="section-title">مدیریت دوره‌ها</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<div class="panel">
 <h3 style="color:var(--brown);font-size:15px">دوره‌های آموزشی</h3>
-<p style="font-size:12px;color:var(--muted);line-height:2">
-ایجاد دوره جدید، ویرایش عنوان و توضیحات، تعیین قیمت و مدیریت وضعیت انتشار.
-</p>
-<button type="button" style="background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px;font-family:inherit">
-افزودن دوره جدید
-</button>
+<p style="font-size:12px;color:var(--muted);line-height:2">ایجاد دوره جدید، تعیین قیمت، توضیحات و وضعیت انتشار.</p>
+<button type="button" class="primary-btn" id="addCourseBtn">افزودن دوره جدید</button>
 </div>
+<div id="courseFormContainer"></div>
+<div id="courseList" class="panel">در حال دریافت دوره‌ها...</div>
 </section>
-
 <section id="content" style="margin-bottom:25px">
 <h2 class="section-title">مدیریت محتوای آموزشی</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:12px;color:var(--muted);line-height:2">
-مدیریت درس‌ها، فایل‌های صوتی، ویدئوها و تمرین‌های آموزشی در این قسمت انجام خواهد شد.
-</p>
-</div>
+<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">مدیریت درس‌ها، فایل‌های صوتی، ویدئوها و تمرین‌های آموزشی در این قسمت انجام خواهد شد.</p></div>
 </section>
 <section id="orders" style="margin-bottom:25px">
 <h2 class="section-title">مدیریت سفارش‌ها و پرداخت‌ها</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:12px;color:var(--muted);line-height:2">
-نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.
-</p>
-</div>
+<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.</p></div>
 </section>
-
 <section id="reports" style="margin-bottom:25px">
 <h2 class="section-title">گزارش‌ها و آمار</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:12px;color:var(--muted);line-height:2">
-گزارش ثبت‌نام‌ها، فروش دوره‌ها، میزان پیشرفت هنرجویان و عملکرد آموزشی.
-</p>
-</div>
+<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">گزارش ثبت‌نام‌ها، فروش دوره‌ها، میزان پیشرفت هنرجویان و عملکرد آموزشی.</p></div>
 </section>
-
 <section id="settings" style="margin-bottom:25px">
 <h2 class="section-title">تنظیمات سامانه</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:12px;color:var(--muted);line-height:2">
-تنظیم اطلاعات مدرس، مشخصات سایت، مدیریت دسترسی‌ها و تنظیمات امنیتی.
-</p>
-</div>
+<div class="panel"><p style="font-size:12px;color:var(--muted);line-height:2">تنظیم اطلاعات مدرس، مشخصات سایت، مدیریت دسترسی‌ها و تنظیمات امنیتی.</p></div>
 </section>
-
-<footer style="text-align:center;padding:20px;color:var(--muted);font-size:11px">
-© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.
-</footer>
+<footer>© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.</footer>
 </main>
 </div>
-  
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -220,13 +164,7 @@ async function protectAdminPanel() {
 }
 
 async function loadCourses() {
-  const section = document.getElementById('courses');
-  const container = document.createElement('div');
-
-  container.style.cssText =
-    'background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-top:15px';
-
-  section.appendChild(container);
+  const container = document.getElementById('courseList');
   container.textContent = 'در حال دریافت دوره‌ها...';
 
   const { data, error } = await supabase
@@ -235,7 +173,7 @@ async function loadCourses() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    container.textContent = 'خطا: ' + error.message;
+    container.textContent = 'خطا در دریافت دوره‌ها: ' + error.message;
     return;
   }
 
@@ -243,6 +181,7 @@ async function loadCourses() {
 
   const heading = document.createElement('h3');
   heading.textContent = 'فهرست دوره‌های ثبت‌شده';
+  heading.style.color = 'var(--brown)';
   container.appendChild(heading);
 
   if (!data || data.length === 0) {
@@ -254,7 +193,7 @@ async function loadCourses() {
 
   data.forEach(course => {
     const item = document.createElement('div');
-    item.style.cssText = 'padding:12px 0;border-bottom:1px solid var(--line)';
+    item.className = 'course-item';
 
     const title = document.createElement('strong');
     title.textContent = course.title;
@@ -265,9 +204,95 @@ async function loadCourses() {
       (course.is_published ? 'منتشر شده' : 'پیش‌نویس');
 
     item.append(title, details);
+
+    if (course.description) {
+      const description = document.createElement('p');
+      description.textContent = course.description;
+      item.appendChild(description);
+    }
+
     container.appendChild(item);
   });
 }
+
+function showAddCourseForm() {
+  const container = document.getElementById('courseFormContainer');
+
+  container.innerHTML = `
+    <div class="panel">
+      <h3 style="color:var(--brown);font-size:15px">ایجاد دوره جدید</h3>
+      <form id="newCourseForm">
+        <div class="form-field">
+          <label for="courseTitle">عنوان دوره</label>
+          <input id="courseTitle" type="text" placeholder="مثلاً مسیر آگاهی و بیداری" required>
+        </div>
+        <div class="form-field">
+          <label for="courseDescription">توضیحات دوره</label>
+          <textarea id="courseDescription" placeholder="توضیحات دوره را وارد کنید"></textarea>
+        </div>
+        <div class="form-field">
+          <label for="coursePrice">قیمت دوره</label>
+          <input id="coursePrice" type="number" min="0" step="0.01" placeholder="مثلاً 1000" required>
+        </div>
+        <div class="form-field">
+          <label><input id="coursePublished" type="checkbox"> انتشار دوره برای هنرجویان</label>
+        </div>
+        <button type="submit" class="primary-btn" id="saveCourseBtn">ذخیره دوره</button>
+        <button type="button" class="secondary-btn" id="cancelCourseBtn">انصراف</button>
+        <p id="courseFormMessage" class="status-message"></p>
+      </form>
+    </div>
+  `;
+
+  document.getElementById('cancelCourseBtn').addEventListener('click', () => {
+    container.replaceChildren();
+  });
+
+  document.getElementById('newCourseForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const title = document.getElementById('courseTitle').value.trim();
+    const description = document.getElementById('courseDescription').value.trim();
+    const priceValue = document.getElementById('coursePrice').value;
+    const isPublished = document.getElementById('coursePublished').checked;
+
+    const message = document.getElementById('courseFormMessage');
+    const saveButton = document.getElementById('saveCourseBtn');
+
+    if (!title || priceValue === '' || !Number.isFinite(Number(priceValue)) || Number(priceValue) < 0) {
+      message.textContent = 'عنوان و قیمت معتبر را وارد کنید.';
+      return;
+    }
+
+    saveButton.disabled = true;
+    message.textContent = 'در حال ذخیره دوره...';
+
+    const { error } = await supabase
+      .from('courses')
+      .insert({
+        title,
+        description,
+        price: Number(priceValue),
+        is_published: isPublished
+      });
+
+    if (error) {
+      message.textContent = 'خطا در ذخیره دوره: ' + error.message;
+      saveButton.disabled = false;
+      return;
+    }
+
+    message.textContent = 'دوره با موفقیت ذخیره شد.';
+    await loadCourses();
+
+    setTimeout(() => {
+      container.replaceChildren();
+    }, 1200);
+  });
+}
+
+document.getElementById('addCourseBtn')
+  .addEventListener('click', showAddCourseForm);
 
 if (await protectAdminPanel()) {
   await loadCourses();
@@ -275,5 +300,3 @@ if (await protectAdminPanel()) {
 </script>
 </body>
 </html>
-
-
