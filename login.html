@@ -238,11 +238,14 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       .select('role')
       .eq('id', data.user.id)
       .single();
+if (profileError || !profile) {
+  const details = profileError
+    ? profileError.code + ' - ' + profileError.message
+    : 'پروفایل خالی است';
 
-    if (profileError || !profile) {
-      await supabase.auth.signOut();
-      throw new Error('پروفایل کاربری پیدا نشد. با پشتیبانی تماس بگیر.');
-    }
+  await supabase.auth.signOut();
+  throw new Error('خطای دریافت پروفایل: ' + details);
+}
 
     if (profile.role === 'admin') {
       window.location.href = 'admin.html';
