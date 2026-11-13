@@ -173,5 +173,39 @@ border-radius:14px;padding:17px;
 </footer>
 </main>
 </div>
+  <script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const supabase = createClient(
+  'https://zowmefbbhowjyozynpay.supabase.co',
+  'sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS'
+);
+
+document.documentElement.style.visibility = 'hidden';
+
+async function protectStudentPanel() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error || !session) {
+    window.location.replace('login.html');
+    return;
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single();
+
+  if (profileError || !profile || profile.role !== 'student') {
+    window.location.replace('login.html');
+    return;
+  }
+
+  document.documentElement.style.visibility = 'visible';
+}
+
+protectStudentPanel();
+</script>
 </body>
 </html>
