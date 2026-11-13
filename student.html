@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f6efdf">
+<title>پنل هنرجو | آگاهی و بیداری معنوی</title>
+<style>
+:root{
+--cream:#f6efdf;
+--paper:#fffaf0;
+--gold:#bd9652;
+--brown:#705638;
+--ink:#403426;
+--muted:#796b58;
+--line:#e8dcc7;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:var(--cream);
+color:var(--ink);
+}
+.header{
+background:var(--paper);
+border-bottom:1px solid var(--line);
+padding:18px 22px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+}
+.brand{color:var(--brown);font-weight:bold;font-size:17px}
+.header a{color:var(--brown);text-decoration:none;font-size:12px}
+.layout{
+max-width:1100px;
+margin:30px auto;
+padding:0 16px;
+display:grid;
+grid-template-columns:240px 1fr;
+gap:22px;
+}
+.sidebar{
+background:var(--paper);
+border:1px solid var(--line);
+border-radius:18px;
+padding:20px;
+height:max-content;
+}
+.profile{
+text-align:center;
+padding:15px 5px 22px;
+border-bottom:1px solid var(--line);
+}
+.avatar{
+width:65px;height:65px;border-radius:50%;
+background:linear-gradient(145deg,#bd9652,#8b7048);
+color:white;display:grid;place-items:center;
+font-size:25px;margin:auto auto 12px;
+}
+.profile h3{font-size:15px;margin:0 0 7px}
+.profile p{font-size:11px;color:var(--muted);margin:0}
+.menu{padding-top:15px;display:grid;gap:8px}
+.menu a{
+display:block;padding:12px;
+border-radius:9px;text-decoration:none;
+color:var(--brown);font-size:13px;
+}
+.menu a.active,.menu a:hover{
+background:#f1e5cf;
+}
+.main{min-width:0}
+.welcome{
+background:linear-gradient(120deg,#8b7048,#bd9652);
+border-radius:18px;padding:27px;color:white;
+margin-bottom:20px;
+}
+.welcome h1{font-size:22px;margin:0 0 12px}
+.welcome p{font-size:13px;line-height:2;margin:0}
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:13px;margin-bottom:22px;
+}
+.stat{
+background:var(--paper);border:1px solid var(--line);
+border-radius:14px;padding:17px;
+}
+.stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
+.stat span{font-size:11px;color:var(--muted)}
+.section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="brand">✧ آگاهی و بیداری معنوی</div>
+<a href="index.html">بازگشت به سایت ←</a>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<div class="profile">
+<div class="avatar">✧</div>
+<h3>هنرجوی عزیز</h3>
+<p>به مسیر شناخت درون خوش آمدی</p>
+</div>
+<nav class="menu">
+<a class="active" href="#home">داشبورد من</a>
+<a href="#courses">دوره‌های من</a>
+<a href="#progress">پیشرفت آموزشی</a>
+<a href="#files">فایل‌های آموزشی</a>
+<a href="#account">حساب کاربری</a>
+<a href="login.html">خروج از حساب</a>
+</nav>
+</aside>
+<main class="main">
+<section class="welcome" id="home">
+<h1>به مسیر آگاهی خوش آمدی 🌱</h1>
+<p>هر قدمی که برای شناخت خودت برمی‌داری، آغاز تجربه‌ای تازه از رشد و آگاهی است.</p>
+</section>
+<section class="stats" id="progress">
+<div class="stat">
+<strong>۰</strong>
+<span>دوره‌های فعال</span>
+</div>
+<div class="stat">
+<strong>۰٪</strong>
+<span>پیشرفت آموزشی</span>
+</div>
+<div class="stat">
+<strong>۰</strong>
+<span>درس تکمیل‌شده</span>
+</div>
+</section>
+<section id="courses" style="margin-bottom:25px">
+<h2 class="section-title">دوره‌های آموزشی من</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<h3 style="color:var(--brown);font-size:15px;margin-top:0">مسیر شناخت درون</h3>
+<p style="color:var(--muted);font-size:12px;line-height:2">
+آموزش خودشناسی، شناخت باورها و آغاز مسیر رشد فردی
+</p>
+<div style="height:7px;background:#eee3d1;border-radius:10px;overflow:hidden">
+<div style="width:0%;height:100%;background:var(--gold)"></div>
+</div>
+<p style="font-size:11px;color:var(--muted)">میزان پیشرفت: ۰ درصد</p>
+<button type="button" style="background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px;font-family:inherit">
+مشاهده دوره
+</button>
+</div>
+</section>
+
+<section id="files" style="margin-bottom:25px">
+<h2 class="section-title">فایل‌های آموزشی</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:13px;color:var(--muted);line-height:2;margin:0">
+فایل‌های صوتی، ویدئویی و تمرین‌های دوره پس از فعال‌سازی دسترسی آموزشی در این قسمت نمایش داده می‌شوند.
+</p>
+</div>
+</section>
+<section id="account" style="margin-bottom:25px">
+<h2 class="section-title">اطلاعات حساب کاربری</h2>
+<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
+<p style="font-size:13px;color:var(--muted);line-height:2">
+نام هنرجو: هنرجوی عزیز<br>
+وضعیت حساب: نمایشی<br>
+نوع عضویت: هنرجو
+</p>
+</div>
+</section>
+
+<footer style="text-align:center;padding:20px;color:var(--muted);font-size:11px">
+© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.
+</footer>
+</main>
+</div>
+</body>
+</html>
