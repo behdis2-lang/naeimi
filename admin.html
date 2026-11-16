@@ -165,6 +165,8 @@ button:disabled{opacity:.6;cursor:not-allowed}
   margin-top:12px;
   overflow-wrap:anywhere;
 }
+#newCoursePanel:target{display:block!important}
+
 footer{
   text-align:center;
   padding:20px;
@@ -250,12 +252,28 @@ footer{
     <p style="font-size:12px;color:var(--muted);line-height:2">
       ایجاد دوره جدید، تعیین قیمت، توضیحات و بارگذاری فایل‌ها.
     </p>
-    <button type="button" class="primary-btn" id="addCourseBtn">
+    <a class="primary-btn" id="addCourseBtn" href="#newCoursePanel" style="display:inline-block;text-decoration:none">
       افزودن دوره جدید
-    </button>
+    </a>
   </div>
 
-  <div id="courseFormContainer"></div>
+  <div id="courseFormContainer">
+    <div id="newCoursePanel" class="panel" style="display:none">
+      <h3 style="color:var(--brown);font-size:15px">ایجاد دوره جدید</h3>
+      <form id="newCourseForm" onsubmit="if(window.saveCourse){window.saveCourse(event)}else{event.preventDefault();document.getElementById('courseFormMessage').textContent='سامانه هنوز آماده نشده؛ صفحه را دوباره بارگذاری کنید.'}">
+        <div class="form-field"><label for="courseTitle">عنوان دوره</label><input id="courseTitle" type="text" required></div>
+        <div class="form-field"><label for="courseDescription">توضیحات دوره</label><textarea id="courseDescription"></textarea></div>
+        <div class="form-field"><label for="coursePrice">قیمت دوره</label><input id="coursePrice" type="number" min="0" step="0.01" required></div>
+        <div class="form-field"><label for="courseImage">تصویر دوره</label><input id="courseImage" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        <div class="form-field"><label for="courseAudio">فایل صوتی دوره</label><input id="courseAudio" type="file" accept="audio/mpeg,audio/mp4,audio/wav"></div>
+        <div class="form-field"><label for="courseVideo">ویدئوی دوره</label><input id="courseVideo" type="file" accept="video/mp4,video/webm"></div>
+        <div class="form-field"><label><input id="coursePublished" type="checkbox"> انتشار دوره برای هنرجویان</label></div>
+        <button type="submit" class="primary-btn" id="saveCourseBtn">ذخیره دوره</button>
+        <a href="#courses" class="secondary-btn" style="display:inline-block;text-decoration:none">انصراف</a>
+        <p id="courseFormMessage" class="status-message"></p>
+      </form>
+    </div>
+  </div>
   <div id="courseList" class="panel">در حال دریافت دوره‌ها...</div>
 </section>
 
