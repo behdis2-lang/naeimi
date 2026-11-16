@@ -154,6 +154,14 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 .step-image-choice{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=500&q=85')}
 .step-image-practice{background-image:url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=500&q=85')}
 @media(max-width:520px){.step-image{flex-basis:82px;height:70px}.step{padding:13px 12px;gap:10px}}
+
+/* کارت‌ها و مراحل آموزشی کاملاً قابل کلیک */
+.pillar-link{display:block;color:inherit;border-radius:14px;transition:transform .2s,box-shadow .2s}
+.pillar-link:hover,.pillar-link:focus-visible{transform:translateY(-4px);box-shadow:0 14px 30px rgba(64,52,38,.14);outline:2px solid var(--gold);outline-offset:3px}
+.step-link{display:flex;color:inherit;transition:transform .2s,box-shadow .2s}
+.step-link:hover,.step-link:focus-visible{transform:translateX(-4px);box-shadow:0 8px 22px rgba(64,52,38,.12);outline:2px solid var(--gold);outline-offset:2px}
+.course-click{cursor:pointer;transition:transform .2s,box-shadow .2s}
+.course-click:hover,.course-click:focus-visible{transform:translateY(-4px);box-shadow:0 14px 30px rgba(64,52,38,.14);outline:2px solid var(--gold);outline-offset:3px}
 </style>
 </head>
 <body>
@@ -194,7 +202,7 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 <div class="container">
 <div class="section-head"><div class="section-label">آنچه اینجا یاد می‌گیری</div><h2>سه گام برای عمیق‌تر دیدن زندگی</h2><p>آموزش‌ها در سه محور به‌هم‌پیوسته طراحی شده‌اند تا آگاهی در زندگی روزمره به کار بیاید.</p></div>
 <div class="pillars">
-<article class="pillar"><div class="pillar-image pillar-image-awakening" role="img" aria-label="طلوع خورشید در طبیعت، نماد بیداری و آگاهی"></div><div class="pillar-icon">◉</div><h3>آگاهی و بیداری معنوی</h3><p>تمرین مشاهده، حضور در لحظه و توجه به تجربه‌های درونی؛ با نگاهی تأملی و واقع‌بینانه به مسیر بیداری.</p></article>
+<a class="pillar-link" href="learn.html?topic=awakening" aria-label="مطالعه آموزش awakening"><a class="pillar-link" href="learn.html?topic=self" aria-label="مطالعه آموزش self"><a class="pillar-link" href="learn.html?topic=growth" aria-label="مطالعه آموزش growth"><article class="pillar"><div class="pillar-image pillar-image-awakening" role="img" aria-label="طلوع خورشید در طبیعت، نماد بیداری و آگاهی"></div><div class="pillar-icon">◉</div><h3>آگاهی و بیداری معنوی</h3><p>تمرین مشاهده، حضور در لحظه و توجه به تجربه‌های درونی؛ با نگاهی تأملی و واقع‌بینانه به مسیر بیداری.</p></article></a></a></a>
 <article class="pillar"><div class="pillar-image pillar-image-self" role="img" aria-label="فردی در حال تأمل و خودشناسی در طبیعت"></div><div class="pillar-icon">⌕</div><h3>خودشناسی و شناخت درون</h3><p>شناخت باورها، گفت‌وگوی درونی، ارزش‌ها و الگوهایی که بر احساسات و تصمیم‌های ما اثر می‌گذارند.</p></article>
 <article class="pillar"><div class="pillar-image pillar-image-growth" role="img" aria-label="مسیر سبز رو به نور، نماد رشد فردی"></div><div class="pillar-icon">↗</div><h3>رشد فردی و زندگی آگاهانه</h3><p>تبدیل شناخت به عمل؛ با تمرین‌های کوچک برای مدیریت هیجان، ساخت عادت و انتخاب‌های سنجیده‌تر.</p></article>
 </div>
@@ -205,10 +213,10 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 <div class="container journey-grid">
 <div class="journey-intro"><div class="section-label">نقشه راه تو</div><h2>قرار نیست همه‌چیز را یک‌شبه تغییر بدهی.</h2><p>رشد درونی با دیدن و فهمیدن آغاز می‌شود. قدم‌های کوچک اما پیوسته، به تو کمک می‌کنند آموخته‌ها را وارد زندگی واقعی کنی.</p><a class="btn" href="#courses">شروع از دوره شناخت درون</a></div>
 <div class="steps">
-<div class="step"><div class="step-image step-image-pause" role="img" aria-label="آرامش و مکث در طبیعت"></div><div class="step-no">۱</div><div><h3>مکث و مشاهده</h3><p>بدون قضاوت، افکار و احساساتت را همان‌طور که هستند ببین.</p></div></div>
-<div class="step"><div class="step-image step-image-patterns" role="img" aria-label="دفتر یادداشت برای شناخت الگوهای ذهنی"></div><div class="step-no">۲</div><div><h3>شناخت الگوها</h3><p>باورها، عادت‌ها و واکنش‌های تکراری خودت را شناسایی کن.</p></div></div>
-<div class="step"><div class="step-image step-image-choice" role="img" aria-label="دو مسیر برای انتخاب آگاهانه"></div><div class="step-no">۳</div><div><h3>انتخاب آگاهانه</h3><p>به‌جای واکنش خودکار، برای پاسخ و رفتار تازه فرصت ایجاد کن.</p></div></div>
-<div class="step"><div class="step-image step-image-practice" role="img" aria-label="تمرین و استمرار در مسیر رشد"></div><div class="step-no">۴</div><div><h3>تمرین و استمرار</h3><p>آموخته‌ها را با تمرین‌های ساده در زندگی روزانه تثبیت کن.</p></div></div>
+<a class="step step-link" href="learn.html?topic=pause">class="step"><div class="step-image step-image-pause" role="img" aria-label="آرامش و مکث در طبیعت"></div><div class="step-no">۱</div><div><h3>مکث و مشاهده</h3><p>بدون قضاوت، افکار و احساساتت را همان‌طور که هستند ببین.</p></div></a>
+<a class="step step-link" href="learn.html?topic=patterns">class="step"><div class="step-image step-image-patterns" role="img" aria-label="دفتر یادداشت برای شناخت الگوهای ذهنی"></div><div class="step-no">۲</div><div><h3>شناخت الگوها</h3><p>باورها، عادت‌ها و واکنش‌های تکراری خودت را شناسایی کن.</p></div></a>
+<a class="step step-link" href="learn.html?topic=choice">class="step"><div class="step-image step-image-choice" role="img" aria-label="دو مسیر برای انتخاب آگاهانه"></div><div class="step-no">۳</div><div><h3>انتخاب آگاهانه</h3><p>به‌جای واکنش خودکار، برای پاسخ و رفتار تازه فرصت ایجاد کن.</p></div></a>
+<a class="step step-link" href="learn.html?topic=practice">class="step"><div class="step-image step-image-practice" role="img" aria-label="تمرین و استمرار در مسیر رشد"></div><div class="step-no">۴</div><div><h3>تمرین و استمرار</h3><p>آموخته‌ها را با تمرین‌های ساده در زندگی روزانه تثبیت کن.</p></div></a>
 </div>
 </div>
 </section>
@@ -217,8 +225,8 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 <div class="container">
 <div class="section-head"><div class="section-label">آموزش‌ها و دوره‌ها</div><h2>یادگیری را از یک قدم روشن شروع کن</h2><p>دوره‌ها با هدف ارائه آموزش قابل‌فهم و تمرین‌پذیر طراحی شده‌اند. جزئیات ثبت‌نام پس از آماده‌شدن دوره‌ها اعلام می‌شود.</p></div>
 <div class="course-grid">
-<article class="course"><div class="course-top"><div class="course-tag">شروع مسیر</div><h3>دوره شناخت درون</h3><p>آشنایی با ابزارهای پایه خودشناسی و رشد فردی</p></div><div class="course-body"><ul><li>شناخت ارزش‌ها و گفت‌وگوی درونی</li><li>مدیریت احساسات و استرس</li><li>شناخت عادت‌ها و تله مقایسه</li><li>سپاسگزاری و هدف‌گذاری</li></ul><span class="status">محتوای آموزشی رایگان</span><br><a class="btn btn-outline" href="#contact">دریافت اطلاعات دوره</a></div></article>
-<article class="course"><div class="course-top dark"><div class="course-tag">گام بعدی</div><h3>مسیر آگاهی و بیداری</h3><p>مسیر آموزشی عمیق‌تر برای شناخت و مشاهده آگاهانه</p></div><div class="course-body"><ul><li>شناخت عمیق‌تر باورها و الگوهای ذهنی</li><li>تمرین حضور و مشاهده درونی</li><li>پیوند آگاهی با انتخاب‌های روزمره</li><li>تمرین‌های مرحله‌به‌مرحله</li></ul><span class="status">در حال آماده‌سازی</span><br><a class="btn btn-outline" href="#contact">اطلاع از زمان انتشار</a></div></article>
+<article class="course course-click" data-href="student.html" tabindex="0" role="link" aria-label="ورود به محتوای دوره شناخت درون"><div class="course-top"><div class="course-tag">شروع مسیر</div><h3>دوره شناخت درون</h3><p>آشنایی با ابزارهای پایه خودشناسی و رشد فردی</p></div><div class="course-body"><ul><li>شناخت ارزش‌ها و گفت‌وگوی درونی</li><li>مدیریت احساسات و استرس</li><li>شناخت عادت‌ها و تله مقایسه</li><li>سپاسگزاری و هدف‌گذاری</li></ul><span class="status">محتوای آموزشی رایگان</span><br><a class="btn btn-outline" href="#contact">دریافت اطلاعات دوره</a></div></article>
+<article class="course course-click" data-href="student.html" tabindex="0" role="link" aria-label="ورود به پنل دوره‌های آموزشی"><div class="course-top dark"><div class="course-tag">گام بعدی</div><h3>مسیر آگاهی و بیداری</h3><p>مسیر آموزشی عمیق‌تر برای شناخت و مشاهده آگاهانه</p></div><div class="course-body"><ul><li>شناخت عمیق‌تر باورها و الگوهای ذهنی</li><li>تمرین حضور و مشاهده درونی</li><li>پیوند آگاهی با انتخاب‌های روزمره</li><li>تمرین‌های مرحله‌به‌مرحله</li></ul><span class="status">در حال آماده‌سازی</span><br><a class="btn btn-outline" href="#contact">اطلاع از زمان انتشار</a></div></article>
 </div>
 </div>
 </section>
@@ -267,7 +275,7 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 const menuBtn=document.getElementById('menuBtn');
 const navLinks=document.getElementById('navLinks');
 menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));\ndocument.querySelectorAll('.course-click').forEach(card=>{const go=()=>{window.location.href=card.dataset.href};card.addEventListener('click',e=>{if(!e.target.closest('a,button'))go()});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
 </script>
 </body>
 </html>
