@@ -661,6 +661,34 @@ async function loadCourses() {
 
     item.append(title, details);
 
+    if (!course.is_published && Number(course.price) === 0) {
+      const publishButton = document.createElement('button');
+      publishButton.type = 'button';
+      publishButton.className = 'primary-btn';
+      publishButton.textContent = 'انتشار دوره رایگان برای هنرجویان';
+      publishButton.style.margin = '6px 0 10px';
+      publishButton.addEventListener('click', async () => {
+        if (!window.confirm('دوره «' + (course.title || 'بدون عنوان') + '» رایگان است. آن را برای هنرجویان منتشر می‌کنی؟')) return;
+        publishButton.disabled = true;
+        publishButton.textContent = 'در حال انتشار...';
+        const { error: publishError } = await supabase
+          .from('courses')
+          .update({ is_published: true })
+          .eq('id', course.id)
+          .eq('is_published', false)
+          .select('id')
+          .single();
+        if (publishError) {
+          publishButton.disabled = false;
+          publishButton.textContent = 'تلاش دوباره برای انتشار';
+          window.alert('انتشار انجام نشد: ' + publishError.message);
+          return;
+        }
+        await loadCourses();
+      });
+      item.appendChild(publishButton);
+    }
+
     if (course.description) {
       const description = document.createElement('p');
       description.textContent = course.description;
