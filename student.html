@@ -19,6 +19,7 @@ body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:
 .menu{padding-top:13px;display:grid;gap:6px}.menu a{display:block;padding:11px;border-radius:9px;text-decoration:none;color:var(--brown);font-size:13px}.menu a:hover,.menu a.active{background:#f1e5cf}
 .main{min-width:0}.welcome{background:linear-gradient(120deg,#8b7048,#bd9652);border-radius:18px;padding:24px;color:white;margin-bottom:18px}
 .welcome h1{font-size:21px;margin:0 0 9px}.welcome p{font-size:13px;line-height:2;margin:0}
+.preview-banner{background:#fff2d7;border:1px solid #d8b56f;color:#725322;border-radius:12px;padding:12px 15px;margin-bottom:16px;font-size:12px;line-height:2}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}.stat{padding:15px}.stat strong{display:block;font-size:22px;color:var(--brown);margin-bottom:6px}.stat span{font-size:11px;color:var(--muted)}
 .section-title{font-size:17px;color:var(--brown);margin:0 0 13px}.course-list{display:grid;gap:16px}
 .course-card{padding:18px;margin-bottom:16px}.course-head h3{margin:0 0 7px;color:var(--brown);font-size:17px}.description{font-size:12px;line-height:2;color:var(--muted);margin:0 0 14px}
@@ -45,6 +46,7 @@ footer{text-align:center;padding:22px;color:var(--muted);font-size:11px}
 </aside>
 <main class="main">
   <section class="welcome" id="home"><h1>به مسیر آگاهی خوش آمدی 🌱</h1><p>هر قدمی که برای شناخت خودت برمی‌داری، آغاز تجربه‌ای تازه از رشد و آگاهی است.</p></section>
+  <div id="previewBanner" class="preview-banner" hidden>حالت پیش‌نمایش مدیر فعال است. این صفحه فقط محتوای منتشرشده را برای بررسی نمایش می‌دهد و ثبت‌نام یا دسترسی واقعی هنرجو را شبیه‌سازی نمی‌کند.</div>
   <section class="stats">
     <div class="stat"><strong id="courseCount">—</strong><span>دوره‌های در دسترس</span></div>
     <div class="stat"><strong id="lessonCount">—</strong><span>درس‌های منتشرشده</span></div>
@@ -76,11 +78,19 @@ async function protectStudentPanel(){
   const {data:{session},error}=await supabase.auth.getSession();
   if(error||!session){window.location.replace('login.html');return null;}
   const {data:profile,error:profileError}=await supabase.from('profiles').select('role').eq('id',session.user.id).single();
-  if(profileError||!profile||profile.role!=='student'){window.location.replace('login.html');return null;}
-  const displayName=session.user.user_metadata?.full_name||session.user.email||'هنرجو';
+  if(profileError||!profile||!['student','admin'].includes(profile.role)){window.location.replace('login.html');return null;}
+  const isPreview=profile.role==='admin';
+  const displayName=session.user.user_metadata?.full_name||session.user.email||(isPreview?'مدیر سامانه':'هنرجو');
   $('studentName').textContent=displayName;$('accountName').textContent=displayName;$('accountEmail').textContent=session.user.email||'ثبت نشده';
+  if(isPreview){
+    $('previewBanner').hidden=false;
+    $('accountName').closest('.notice').innerHTML='نام حساب: <strong id="accountName">'+escapeHtml(displayName)+'</strong><br>ایمیل: <strong id="accountEmail">'+escapeHtml(session.user.email||'ثبت نشده')+'</strong><br>نوع دسترسی: <strong>پیش‌نمایش مدیر</strong>';
+    $('accountName').textContent=displayName;$('accountEmail').textContent=session.user.email||'ثبت نشده';
+  }else{
+    $('accountName').closest('.notice').innerHTML='نام هنرجو: <strong id="accountName">'+escapeHtml(displayName)+'</strong><br>ایمیل: <strong id="accountEmail">'+escapeHtml(session.user.email||'ثبت نشده')+'</strong><br>نوع عضویت: <strong>هنرجو</strong>';
+  }
   document.documentElement.style.visibility='visible';
-  return session;
+  return {session,isPreview};
 }
 function assetMarkup(asset,url){
   const title=escapeHtml(asset.title||asset.original_file_name||'فایل آموزشی');
@@ -93,10 +103,17 @@ function assetMarkup(asset,url){
   const download=asset.is_downloadable?'<div class="asset-actions"><a href="'+escapeHtml(url)+'" download="'+escapeHtml(asset.original_file_name||asset.title||'file')+'">دانلود فایل</a></div>':'';
   return '<div class="asset"><div class="asset-title">'+title+'</div>'+media+'<small>'+formatSize(asset.file_size)+'</small>'+download+'</div>';
 }
-async function loadStudentContent(session){
-  const {data:enrollments,error:enrollmentError}=await supabase.from('enrollments').select('course_id').eq('student_id',session.user.id);
-  if(enrollmentError) throw new Error('دریافت ثبت‌نام‌ها ناموفق بود: '+enrollmentError.message);
-  const courseIds=[...new Set((enrollments||[]).map(row=>row.course_id).filter(Boolean))];
+async function loadStudentContent(session,isPreview=false){
+  let courseIds=[];
+  if(isPreview){
+    const {data:previewCourses,error:previewError}=await supabase.from('courses').select('id').eq('is_published',true);
+    if(previewError) throw new Error('دریافت دوره‌های منتشرشده برای پیش‌نمایش ناموفق بود: '+previewError.message);
+    courseIds=[...new Set((previewCourses||[]).map(row=>row.id).filter(Boolean))];
+  }else{
+    const {data:enrollments,error:enrollmentError}=await supabase.from('enrollments').select('course_id').eq('student_id',session.user.id);
+    if(enrollmentError) throw new Error('دریافت ثبت‌نام‌ها ناموفق بود: '+enrollmentError.message);
+    courseIds=[...new Set((enrollments||[]).map(row=>row.course_id).filter(Boolean))];
+  }
   if(!courseIds.length){
     $('courseCount').textContent='۰';$('lessonCount').textContent='۰';$('assetCount').textContent='۰';
     $('courseList').innerHTML='<div class="empty">هنوز دوره‌ای به حساب تو اختصاص داده نشده است. پس از ثبت‌نام در یک دوره، محتوای آن در همین قسمت نمایش داده می‌شود.</div>';
@@ -161,8 +178,8 @@ async function loadStudentContent(session){
 }
 $('logoutBtn').addEventListener('click',async event=>{event.preventDefault();await supabase.auth.signOut();window.location.replace('login.html');});
 try{
-  const session=await protectStudentPanel();
-  if(session) await loadStudentContent(session);
+  const access=await protectStudentPanel();
+  if(access) await loadStudentContent(access.session,access.isPreview);
 }catch(error){
   showError(error.message||'خطای غیرمنتظره در دریافت محتوای آموزشی.');
   document.documentElement.style.visibility='visible';
