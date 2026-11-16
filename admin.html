@@ -646,7 +646,7 @@ async function loadCourses() {
     return;
   }
 
-  data.forEach(course => {
+  for (const course of data) {
     const item = document.createElement('div');
     item.className = 'course-item';
 
@@ -676,7 +676,7 @@ async function loadCourses() {
     item.appendChild(files);
     container.appendChild(item);
     await loadChapters(course, item);
-  });
+  }
 }
 
 function showAddCourseForm() {
