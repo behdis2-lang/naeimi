@@ -6,217 +6,167 @@
 <meta name="theme-color" content="#f6efdf">
 <title>پنل هنرجو | آگاهی و بیداری معنوی</title>
 <style>
-:root{
---cream:#f6efdf;
---paper:#fffaf0;
---gold:#bd9652;
---brown:#705638;
---ink:#403426;
---muted:#796b58;
---line:#e8dcc7;
-}
+:root{--cream:#f6efdf;--paper:#fffaf0;--gold:#bd9652;--brown:#705638;--ink:#403426;--muted:#796b58;--line:#e8dcc7}
 *{box-sizing:border-box}
-body{
-margin:0;
-font-family:Tahoma,Arial,sans-serif;
-background:var(--cream);
-color:var(--ink);
-}
-.header{
-background:var(--paper);
-border-bottom:1px solid var(--line);
-padding:18px 22px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-}
-.brand{color:var(--brown);font-weight:bold;font-size:17px}
-.header a{color:var(--brown);text-decoration:none;font-size:12px}
-.layout{
-max-width:1100px;
-margin:30px auto;
-padding:0 16px;
-display:grid;
-grid-template-columns:240px 1fr;
-gap:22px;
-}
-.sidebar{
-background:var(--paper);
-border:1px solid var(--line);
-border-radius:18px;
-padding:20px;
-height:max-content;
-}
-.profile{
-text-align:center;
-padding:15px 5px 22px;
-border-bottom:1px solid var(--line);
-}
-.avatar{
-width:65px;height:65px;border-radius:50%;
-background:linear-gradient(145deg,#bd9652,#8b7048);
-color:white;display:grid;place-items:center;
-font-size:25px;margin:auto auto 12px;
-}
-.profile h3{font-size:15px;margin:0 0 7px}
-.profile p{font-size:11px;color:var(--muted);margin:0}
-.menu{padding-top:15px;display:grid;gap:8px}
-.menu a{
-display:block;padding:12px;
-border-radius:9px;text-decoration:none;
-color:var(--brown);font-size:13px;
-}
-.menu a.active,.menu a:hover{
-background:#f1e5cf;
-}
-.main{min-width:0}
-.welcome{
-background:linear-gradient(120deg,#8b7048,#bd9652);
-border-radius:18px;padding:27px;color:white;
-margin-bottom:20px;
-}
-.welcome h1{font-size:22px;margin:0 0 12px}
-.welcome p{font-size:13px;line-height:2;margin:0}
-.stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:13px;margin-bottom:22px;
-}
-.stat{
-background:var(--paper);border:1px solid var(--line);
-border-radius:14px;padding:17px;
-}
-.stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
-.stat span{font-size:11px;color:var(--muted)}
-.section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
-@media(max-width:760px){.layout{grid-template-columns:1fr;margin:16px auto}.stats{grid-template-columns:1fr}.header{padding:14px 16px}.sidebar{padding:14px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+.header{background:var(--paper);border-bottom:1px solid var(--line);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{color:var(--brown);font-weight:bold;font-size:17px}.header a{color:var(--brown);text-decoration:none;font-size:12px}
+.layout{max-width:1100px;margin:28px auto;padding:0 16px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px}
+.sidebar,.panel,.course-card,.stat{background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.sidebar{padding:18px;height:max-content}.profile{text-align:center;padding:12px 5px 20px;border-bottom:1px solid var(--line)}
+.avatar{width:62px;height:62px;border-radius:50%;background:linear-gradient(145deg,#bd9652,#8b7048);color:white;display:grid;place-items:center;font-size:25px;margin:0 auto 12px}
+.profile h3{font-size:15px;margin:0 0 7px}.profile p{font-size:11px;color:var(--muted);margin:0}
+.menu{padding-top:13px;display:grid;gap:6px}.menu a{display:block;padding:11px;border-radius:9px;text-decoration:none;color:var(--brown);font-size:13px}.menu a:hover,.menu a.active{background:#f1e5cf}
+.main{min-width:0}.welcome{background:linear-gradient(120deg,#8b7048,#bd9652);border-radius:18px;padding:24px;color:white;margin-bottom:18px}
+.welcome h1{font-size:21px;margin:0 0 9px}.welcome p{font-size:13px;line-height:2;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}.stat{padding:15px}.stat strong{display:block;font-size:22px;color:var(--brown);margin-bottom:6px}.stat span{font-size:11px;color:var(--muted)}
+.section-title{font-size:17px;color:var(--brown);margin:0 0 13px}.course-list{display:grid;gap:16px}
+.course-card{padding:18px;margin-bottom:16px}.course-head h3{margin:0 0 7px;color:var(--brown);font-size:17px}.description{font-size:12px;line-height:2;color:var(--muted);margin:0 0 14px}
+.chapter{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.chapter h4{font-size:14px;color:var(--brown);margin:0 0 8px}.chapter-desc{font-size:12px;color:var(--muted);line-height:1.9}
+.lesson{background:#fbf5e9;border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px}.lesson h5{font-size:13px;color:var(--ink);margin:0 0 7px}.lesson p{font-size:12px;color:var(--muted);line-height:1.9;margin:0 0 8px}
+.asset-list{display:grid;gap:9px;margin-top:10px}.asset{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:11px}.asset-title{font-size:12px;font-weight:bold;color:var(--brown);margin-bottom:7px}.asset small{font-size:10px;color:var(--muted)}
+.asset img,.asset video{display:block;width:100%;max-height:360px;object-fit:contain;border-radius:8px;background:#eee;margin-top:8px}
+.asset audio{width:100%;margin-top:8px}.asset-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}.asset-actions a{font-size:11px;color:var(--brown);text-decoration:underline}
+.empty,.notice{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:18px;color:var(--muted);font-size:13px;line-height:2}
+.loading{color:var(--muted);font-size:13px;padding:15px}.error{color:#8b3b2f}
+footer{text-align:center;padding:22px;color:var(--muted);font-size:11px}
+@media(max-width:760px){.layout{grid-template-columns:1fr;margin:15px auto}.stats{grid-template-columns:1fr 1fr}.header{padding:13px 15px}.sidebar{padding:13px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr}.course-card{padding:13px}}
 </style>
 </head>
 <body>
-<header class="header">
-<div class="brand">✧ آگاهی و بیداری معنوی</div>
-<a href="index.html">بازگشت به سایت ←</a>
-</header>
+<header class="header"><div class="brand">✧ آگاهی و بیداری معنوی</div><a href="index.html">بازگشت به سایت ←</a></header>
 <div class="layout">
 <aside class="sidebar">
-<div class="profile">
-<div class="avatar">✧</div>
-<h3 id="studentName">هنرجوی عزیز</h3>
-<p>به مسیر شناخت درون خوش آمدی</p>
-</div>
-<nav class="menu">
-<a class="active" href="#home">داشبورد من</a>
-<a href="#courses">دوره‌های من</a>
-<a href="#progress">پیشرفت آموزشی</a>
-<a href="#files">فایل‌های آموزشی</a>
-<a href="#account">حساب کاربری</a>
-<a href="#" id="logoutBtn">خروج از حساب</a>
-</nav>
+  <div class="profile"><div class="avatar">✧</div><h3 id="studentName">هنرجوی عزیز</h3><p>به مسیر شناخت درون خوش آمدی</p></div>
+  <nav class="menu">
+    <a class="active" href="#home">داشبورد من</a><a href="#courses">دوره‌های من</a><a href="#files">فایل‌های آموزشی</a><a href="#account">حساب کاربری</a><a href="#" id="logoutBtn">خروج از حساب</a>
+  </nav>
 </aside>
 <main class="main">
-<section class="welcome" id="home">
-<h1>به مسیر آگاهی خوش آمدی 🌱</h1>
-<p>هر قدمی که برای شناخت خودت برمی‌داری، آغاز تجربه‌ای تازه از رشد و آگاهی است.</p>
-</section>
-<section class="stats" id="progress">
-<div class="stat">
-<strong>۰</strong>
-<span>دوره‌های فعال</span>
-</div>
-<div class="stat">
-<strong>۰٪</strong>
-<span>پیشرفت آموزشی</span>
-</div>
-<div class="stat">
-<strong>۰</strong>
-<span>درس تکمیل‌شده</span>
-</div>
-</section>
-<section id="courses" style="margin-bottom:25px">
-<h2 class="section-title">دوره‌های آموزشی من</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<h3 style="color:var(--brown);font-size:15px;margin-top:0">مسیر شناخت درون</h3>
-<p style="color:var(--muted);font-size:12px;line-height:2">
-آموزش خودشناسی، شناخت باورها و آغاز مسیر رشد فردی
-</p>
-<div style="height:7px;background:#eee3d1;border-radius:10px;overflow:hidden">
-<div style="width:0%;height:100%;background:var(--gold)"></div>
-</div>
-<p style="font-size:11px;color:var(--muted)">میزان پیشرفت: ۰ درصد</p>
-<button type="button" style="background:var(--gold);color:white;border:0;border-radius:9px;padding:11px 17px;font-family:inherit">
-مشاهده دوره
-</button>
-</div>
-</section>
-
-<section id="files" style="margin-bottom:25px">
-<h2 class="section-title">فایل‌های آموزشی</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:13px;color:var(--muted);line-height:2;margin:0">
-فایل‌های صوتی، ویدئویی و تمرین‌های دوره پس از فعال‌سازی دسترسی آموزشی در این قسمت نمایش داده می‌شوند.
-</p>
-</div>
-</section>
-<section id="account" style="margin-bottom:25px">
-<h2 class="section-title">اطلاعات حساب کاربری</h2>
-<div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
-<p style="font-size:13px;color:var(--muted);line-height:2">
-نام هنرجو: <strong id="accountName">در حال دریافت...</strong><br>
-ایمیل: <strong id="accountEmail">در حال دریافت...</strong><br>
-نوع عضویت: <strong>هنرجو</strong>
-</p>
-</div>
-</section>
-
-<footer style="text-align:center;padding:20px;color:var(--muted);font-size:11px">
-© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.
-</footer>
+  <section class="welcome" id="home"><h1>به مسیر آگاهی خوش آمدی 🌱</h1><p>هر قدمی که برای شناخت خودت برمی‌داری، آغاز تجربه‌ای تازه از رشد و آگاهی است.</p></section>
+  <section class="stats">
+    <div class="stat"><strong id="courseCount">—</strong><span>دوره‌های در دسترس</span></div>
+    <div class="stat"><strong id="lessonCount">—</strong><span>درس‌های منتشرشده</span></div>
+    <div class="stat"><strong id="assetCount">—</strong><span>فایل‌های آموزشی</span></div>
+  </section>
+  <section id="courses" style="margin-bottom:24px"><h2 class="section-title">دوره‌های آموزشی من</h2><div id="courseList" class="course-list"><div class="loading">در حال دریافت دوره‌ها...</div></div></section>
+  <section id="files" style="margin-bottom:24px"><h2 class="section-title">فایل‌های آموزشی</h2><div id="allFiles" class="notice">فایل‌های مجاز دوره‌ها پس از دریافت اطلاعات نمایش داده می‌شوند.</div></section>
+  <section id="account" style="margin-bottom:24px"><h2 class="section-title">اطلاعات حساب کاربری</h2><div class="notice">نام هنرجو: <strong id="accountName">در حال دریافت...</strong><br>ایمیل: <strong id="accountEmail">در حال دریافت...</strong><br>نوع عضویت: <strong>هنرجو</strong></div></section>
+  <footer>© تمامی حقوق برای آگاهی و بیداری معنوی محفوظ است.</footer>
 </main>
 </div>
-  <script type="module">
+<script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-const supabase = createClient(
-  'https://zowmefbbhowjyozynpay.supabase.co',
-  'sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS'
-);
-
-document.documentElement.style.visibility = 'hidden';
-
-async function protectStudentPanel() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-
-  if (error || !session) {
-    window.location.replace('login.html');
-    return;
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', session.user.id)
-    .single();
-
-  if (profileError || !profile || profile.role !== 'student') {
-    window.location.replace('login.html');
-    return;
-  }
-
-  const displayName = session.user.user_metadata?.full_name || session.user.email || 'هنرجو';
-  document.getElementById('studentName').textContent = displayName;
-  document.getElementById('accountName').textContent = displayName;
-  document.getElementById('accountEmail').textContent = session.user.email || 'ثبت نشده';
-  document.documentElement.style.visibility = 'visible';
+const supabase = createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
+document.documentElement.style.visibility='hidden';
+const $ = id => document.getElementById(id);
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const formatSize = bytes => {
+  const n=Number(bytes)||0;
+  if(n<1024) return n+' بایت';
+  if(n<1048576) return (n/1024).toFixed(1)+' کیلوبایت';
+  return (n/1048576).toFixed(1)+' مگابایت';
+};
+function showError(message){
+  $('courseList').innerHTML='<div class="empty error">'+escapeHtml(message)+'</div>';
+  $('allFiles').textContent='به دلیل خطا، فایل‌ها بارگذاری نشدند.';
 }
-
-document.getElementById('logoutBtn').addEventListener('click', async (event) => {
-  event.preventDefault();
-  await supabase.auth.signOut();
-  window.location.replace('login.html');
-});
-
-protectStudentPanel();
+async function protectStudentPanel(){
+  const {data:{session},error}=await supabase.auth.getSession();
+  if(error||!session){window.location.replace('login.html');return null;}
+  const {data:profile,error:profileError}=await supabase.from('profiles').select('role').eq('id',session.user.id).single();
+  if(profileError||!profile||profile.role!=='student'){window.location.replace('login.html');return null;}
+  const displayName=session.user.user_metadata?.full_name||session.user.email||'هنرجو';
+  $('studentName').textContent=displayName;$('accountName').textContent=displayName;$('accountEmail').textContent=session.user.email||'ثبت نشده';
+  document.documentElement.style.visibility='visible';
+  return session;
+}
+function assetMarkup(asset,url){
+  const title=escapeHtml(asset.title||asset.original_file_name||'فایل آموزشی');
+  const mime=String(asset.mime_type||'');
+  let media='';
+  if(mime.startsWith('image/')) media='<img loading="lazy" src="'+escapeHtml(url)+'" alt="'+title+'">';
+  else if(mime.startsWith('audio/')) media='<audio controls preload="none" src="'+escapeHtml(url)+'"></audio>';
+  else if(mime.startsWith('video/')) media='<video controls playsinline preload="metadata" src="'+escapeHtml(url)+'"></video>';
+  else media='<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">مشاهده فایل</a>';
+  const download=asset.is_downloadable?'<div class="asset-actions"><a href="'+escapeHtml(url)+'" download="'+escapeHtml(asset.original_file_name||asset.title||'file')+'">دانلود فایل</a></div>':'';
+  return '<div class="asset"><div class="asset-title">'+title+'</div>'+media+'<small>'+formatSize(asset.file_size)+'</small>'+download+'</div>';
+}
+async function loadStudentContent(session){
+  const {data:enrollments,error:enrollmentError}=await supabase.from('enrollments').select('course_id').eq('student_id',session.user.id);
+  if(enrollmentError) throw new Error('دریافت ثبت‌نام‌ها ناموفق بود: '+enrollmentError.message);
+  const courseIds=[...new Set((enrollments||[]).map(row=>row.course_id).filter(Boolean))];
+  if(!courseIds.length){
+    $('courseCount').textContent='۰';$('lessonCount').textContent='۰';$('assetCount').textContent='۰';
+    $('courseList').innerHTML='<div class="empty">هنوز دوره‌ای به حساب تو اختصاص داده نشده است. پس از ثبت‌نام در یک دوره، محتوای آن در همین قسمت نمایش داده می‌شود.</div>';
+    $('allFiles').textContent='هنوز فایل آموزشی در دسترس نیست.';
+    return;
+  }
+  const [coursesResult,chaptersResult,lessonsResult,assetsResult]=await Promise.all([
+    supabase.from('courses').select('id,title,description,is_published').in('id',courseIds).eq('is_published',true).order('created_at',{ascending:false}),
+    supabase.from('chapters').select('id,course_id,title,description,sort_order,is_published').in('course_id',courseIds).eq('is_published',true).order('sort_order'),
+    supabase.from('lessons').select('id,course_id,chapter_id,title,description,sort_order,is_published,content_url').in('course_id',courseIds).eq('is_published',true).order('sort_order'),
+    supabase.from('media_assets').select('id,owner_type,owner_id,course_id,lesson_id,bucket_id,storage_path,title,description,mime_type,file_size,category,sort_order,access_level,is_downloadable,is_published').in('course_id',courseIds).eq('is_published',true).order('sort_order')
+  ]);
+  for(const [name,result] of [['دوره‌ها',coursesResult],['فصل‌ها',chaptersResult],['درس‌ها',lessonsResult],['فایل‌ها',assetsResult]]) if(result.error) throw new Error('دریافت '+name+' ناموفق بود: '+result.error.message);
+  const courses=coursesResult.data||[],chapters=chaptersResult.data||[],lessons=lessonsResult.data||[],assets=assetsResult.data||[];
+  const lessonIds=new Set(lessons.map(x=>x.id));
+  const visibleAssets=assets.filter(a=>a.owner_type==='course'||(a.owner_type==='lesson'&&lessonIds.has(a.lesson_id)));
+  const signed=new Map();
+  for(const asset of visibleAssets){
+    const bucket=asset.bucket_id||'course-media';
+    const {data,error}=await supabase.storage.from(bucket).createSignedUrl(asset.storage_path,3600);
+    if(!error&&data?.signedUrl) signed.set(asset.id,data.signedUrl);
+  }
+  const usableAssets=visibleAssets.filter(a=>signed.has(a.id));
+  $('courseCount').textContent=String(courses.length);
+  $('lessonCount').textContent=String(lessons.length);
+  $('assetCount').textContent=String(usableAssets.length);
+  if(!courses.length){
+    $('courseList').innerHTML='<div class="empty">دوره منتشرشده‌ای برای نمایش پیدا نشد.</div>';
+  } else {
+    const courseHtml=[];
+    for(const course of courses){
+      const courseAssets=usableAssets.filter(a=>a.owner_type==='course'&&a.course_id===course.id);
+      const courseLessons=lessons.filter(l=>l.course_id===course.id);
+      const courseChapters=chapters.filter(c=>c.course_id===course.id);
+      let inner='';
+      if(courseAssets.length) inner+='<div class="asset-list">'+courseAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>';
+      const chapterIds=new Set(courseChapters.map(c=>c.id));
+      for(const chapter of courseChapters){
+        const chapterLessons=courseLessons.filter(l=>l.chapter_id===chapter.id);
+        inner+='<div class="chapter"><h4>'+escapeHtml(chapter.title)+'</h4>'+(chapter.description?'<p class="chapter-desc">'+escapeHtml(chapter.description)+'</p>':'');
+        for(const lesson of chapterLessons){
+          const lessonAssets=usableAssets.filter(a=>a.owner_type==='lesson'&&a.lesson_id===lesson.id);
+          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'</div>';
+        }
+        inner+='</div>';
+      }
+      const unassigned=courseLessons.filter(l=>!l.chapter_id||!chapterIds.has(l.chapter_id));
+      if(unassigned.length){
+        inner+='<div class="chapter"><h4>درس‌های دوره</h4>';
+        for(const lesson of unassigned){
+          const lessonAssets=usableAssets.filter(a=>a.owner_type==='lesson'&&a.lesson_id===lesson.id);
+          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'</div>';
+        }
+        inner+='</div>';
+      }
+      if(!inner) inner='<p class="description">محتوای این دوره هنوز منتشر نشده است.</p>';
+      courseHtml.push('<article class="course-card"><div class="course-head"><h3>'+escapeHtml(course.title)+'</h3></div>'+(course.description?'<p class="description">'+escapeHtml(course.description)+'</p>':'')+inner+'</article>');
+    }
+    $('courseList').innerHTML=courseHtml.join('');
+  }
+  $('allFiles').innerHTML=usableAssets.length?'<div class="asset-list">'+usableAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'در حال حاضر فایل منتشرشده‌ای برای نمایش وجود ندارد.';
+}
+$('logoutBtn').addEventListener('click',async event=>{event.preventDefault();await supabase.auth.signOut();window.location.replace('login.html');});
+try{
+  const session=await protectStudentPanel();
+  if(session) await loadStudentContent(session);
+}catch(error){
+  showError(error.message||'خطای غیرمنتظره در دریافت محتوای آموزشی.');
+  document.documentElement.style.visibility='visible';
+}
 </script>
 </body>
 </html>
