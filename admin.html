@@ -250,7 +250,7 @@ footer{
     <p style="font-size:12px;color:var(--muted);line-height:2">
       ایجاد دوره جدید، تعیین قیمت، توضیحات و بارگذاری فایل‌ها.
     </p>
-    <button type="button" class="primary-btn" id="addCourseBtn" onclick="window.openNewCourseForm()">
+    <button type="button" class="primary-btn" id="addCourseBtn">
       افزودن دوره جدید
     </button>
   </div>
@@ -921,6 +921,16 @@ window.openNewCourseForm = function () {
     </div>`;
   container.scrollIntoView({behavior:'smooth',block:'start'});
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+  const addButton = document.getElementById('addCourseBtn');
+  if (addButton) {
+    addButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      window.openNewCourseForm();
+    });
+  }
+});
 </script>
 </body>
 </html>
