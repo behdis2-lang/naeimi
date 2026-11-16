@@ -148,6 +148,10 @@ button:disabled{opacity:.6;cursor:not-allowed}
 }
 .form-field textarea{min-height:90px;resize:vertical}
 .form-field input[type="checkbox"]{width:auto}
+.form-field input[type="file"]{display:block;width:100%;max-width:100%;padding:12px;border:1px dashed var(--brown);border-radius:10px;background:#fffaf4;box-sizing:border-box}
+.course-assets-field{padding:14px;border:1px solid var(--line);border-radius:12px;background:#fffaf4}
+.course-assets-field label{display:block;font-weight:700;color:var(--brown);margin-bottom:8px}
+.course-assets-field small{display:block;color:var(--muted);line-height:2;margin-top:8px}
 .course-item{
   padding:14px 0;
   border-bottom:1px solid var(--line);
@@ -252,7 +256,7 @@ footer{
     <p style="font-size:12px;color:var(--muted);line-height:2">
       ایجاد دوره جدید، تعیین قیمت، توضیحات و بارگذاری فایل‌ها.
     </p>
-    <a class="primary-btn" id="addCourseBtn" href="#newCoursePanel" style="display:inline-block;text-decoration:none">
+    <a class="primary-btn" id="addCourseBtn" href="#newCoursePanel" onclick="event.preventDefault(); if (window.openNewCourseForm) window.openNewCourseForm();" style="display:inline-block;text-decoration:none">
       افزودن دوره جدید
     </a>
   </div>
@@ -267,26 +271,12 @@ footer{
         <div class="form-field"><label for="courseImage">تصویر دوره</label><input id="courseImage" type="file" accept="image/jpeg,image/png,image/webp"></div>
         <div class="form-field"><label for="courseAudio">فایل صوتی دوره</label><input id="courseAudio" type="file" accept="audio/mpeg,audio/mp4,audio/wav"></div>
         <div class="form-field"><label for="courseVideo">ویدئوی دوره</label><input id="courseVideo" type="file" accept="video/mp4,video/webm"></div>
-        <div class="form-field">
+        <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
           <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
           <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی چندین فایل صوتی، تصویری یا ویدئویی را هم‌زمان انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
         </div>
-        <div class="form-field">
-          <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
-          <select id="assetAccessLevel" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit">
-            <option value="premium">ویژه هنرجویان ثبت‌نام‌شده</option>
-            <option value="free">رایگان</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label><input id="assetDownloadable" type="checkbox"> اجازه دانلود فایل‌ها</label>
-        </div>
-        <div class="form-field">
-          <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
-          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
-          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
-        </div>
+        
         <div class="form-field">
           <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
           <select id="assetAccessLevel" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit">
@@ -727,7 +717,7 @@ function showAddCourseForm() {
           <label for="courseVideo">ویدئوی دوره</label>
           <input id="courseVideo" type="file" accept="video/mp4,video/webm">
         </div>
-        <div class="form-field">
+        <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
           <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
           <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
@@ -1057,7 +1047,7 @@ window.openNewCourseForm = function () {
           <label for="courseVideo">ویدئوی دوره</label>
           <input id="courseVideo" type="file" accept="video/mp4,video/webm">
         </div>
-        <div class="form-field">
+        <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
           <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
           <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
