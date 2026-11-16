@@ -267,6 +267,21 @@ footer{
         <div class="form-field"><label for="courseImage">تصویر دوره</label><input id="courseImage" type="file" accept="image/jpeg,image/png,image/webp"></div>
         <div class="form-field"><label for="courseAudio">فایل صوتی دوره</label><input id="courseAudio" type="file" accept="audio/mpeg,audio/mp4,audio/wav"></div>
         <div class="form-field"><label for="courseVideo">ویدئوی دوره</label><input id="courseVideo" type="file" accept="video/mp4,video/webm"></div>
+        <div class="form-field">
+          <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+        </div>
+        <div class="form-field">
+          <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
+          <select id="assetAccessLevel" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit">
+            <option value="premium">ویژه هنرجویان ثبت‌نام‌شده</option>
+            <option value="free">رایگان</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label><input id="assetDownloadable" type="checkbox"> اجازه دانلود فایل‌ها</label>
+        </div>
         <div class="form-field"><label><input id="coursePublished" type="checkbox"> انتشار دوره برای هنرجویان</label></div>
         <button type="submit" class="primary-btn" id="saveCourseBtn">ذخیره دوره</button>
         <a href="#courses" class="secondary-btn" style="display:inline-block;text-decoration:none">انصراف</a>
@@ -697,6 +712,21 @@ function showAddCourseForm() {
           <label for="courseVideo">ویدئوی دوره</label>
           <input id="courseVideo" type="file" accept="video/mp4,video/webm">
         </div>
+        <div class="form-field">
+          <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+        </div>
+        <div class="form-field">
+          <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
+          <select id="assetAccessLevel" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit">
+            <option value="premium">ویژه هنرجویان ثبت‌نام‌شده</option>
+            <option value="free">رایگان</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label><input id="assetDownloadable" type="checkbox"> اجازه دانلود فایل‌ها</label>
+        </div>
 
         <div class="form-field">
           <label>
@@ -738,6 +768,9 @@ async function saveCourse(event) {
     audio: document.getElementById('courseAudio').files[0],
     video: document.getElementById('courseVideo').files[0]
   };
+  const additionalFiles = Array.from(document.getElementById('courseAssets')?.files || []);
+  const assetAccessLevel = document.getElementById('assetAccessLevel')?.value || 'premium';
+  const assetDownloadable = document.getElementById('assetDownloadable')?.checked || false;
 
   const message = document.getElementById('courseFormMessage');
   const saveButton = document.getElementById('saveCourseBtn');
@@ -763,6 +796,22 @@ async function saveCourse(event) {
       message.textContent = 'حجم هر فایل نباید بیشتر از ۵۰ مگابایت باشد.';
       return;
     }
+  }
+
+  const allAllowedTypes = [...allowedTypes.image, ...allowedTypes.audio, ...allowedTypes.video];
+  for (const file of additionalFiles) {
+    if (!allAllowedTypes.includes(file.type)) {
+      message.textContent = 'یکی از فایل‌های بیشتر فرمت مجاز ندارد.';
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      message.textContent = 'حجم هر فایل نباید بیشتر از ۵۰ مگابایت باشد: ' + file.name;
+      return;
+    }
+  }
+  if (!['free', 'premium'].includes(assetAccessLevel)) {
+    message.textContent = 'سطح دسترسی فایل معتبر نیست.';
+    return;
   }
 
   saveButton.disabled = true;
@@ -848,6 +897,70 @@ async function saveCourse(event) {
       paths[item.column] = filePath;
     }
 
+    if (additionalFiles.length) {
+      message.textContent = 'در حال آماده‌سازی فایل‌های بیشتر...';
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        throw new Error('برای بارگذاری فایل‌ها، ورود مدیر تأیید نشد.');
+      }
+
+      for (let index = 0; index < additionalFiles.length; index++) {
+        const file = additionalFiles[index];
+        const safeName = file.name.normalize('NFKD')
+          .replace(/[^a-zA-Z0-9._-]+/g, '-')
+          .replace(/^-+|-+$/g, '').slice(-100) || 'file';
+        const uniqueName = (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : Date.now() + '-' + Math.random().toString(36).slice(2);
+        const storagePath = `${course.id}/course/${course.id}/${uniqueName}-${safeName}`;
+        message.textContent = 'در حال بارگذاری فایل ' + (index + 1) + ' از ' + additionalFiles.length + '...';
+
+        const { error: assetUploadError } = await supabase.storage
+          .from(BUCKET)
+          .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+        if (assetUploadError) {
+          throw new Error('بارگذاری فایل «' + file.name + '» ناموفق بود: ' + assetUploadError.message);
+        }
+        uploadedPaths.push(storagePath);
+
+        const category = file.type.startsWith('image/')
+          ? 'image'
+          : file.type.startsWith('audio/')
+            ? 'audio'
+            : 'video';
+        const assetTitle = file.name.replace(/\\.[^.]+$/, '') || file.name;
+
+        const { error: assetInsertError } = await supabase
+          .from('media_assets')
+          .insert({
+            owner_type: 'course',
+            owner_id: course.id,
+            course_id: course.id,
+            lesson_id: null,
+            bucket_id: BUCKET,
+            storage_path: storagePath,
+            original_file_name: file.name,
+            title: assetTitle,
+            description: null,
+            mime_type: file.type,
+            file_size: file.size,
+            category,
+            sort_order: index,
+            access_level: assetAccessLevel,
+            is_downloadable: assetDownloadable,
+            is_published: isPublished,
+            created_by: userData.user.id
+          });
+
+        if (assetInsertError) {
+          await supabase.storage.from(BUCKET).remove([storagePath]);
+          uploadedPaths.pop();
+          throw new Error('فایل بارگذاری شد اما ثبت مشخصات آن ناموفق بود: ' + assetInsertError.message);
+        }
+      }
+    }
+
     message.textContent = 'در حال ثبت اطلاعات فایل‌ها...';
 
     const { error: updateError } = await supabase
@@ -928,6 +1041,21 @@ window.openNewCourseForm = function () {
         <div class="form-field">
           <label for="courseVideo">ویدئوی دوره</label>
           <input id="courseVideo" type="file" accept="video/mp4,video/webm">
+        </div>
+        <div class="form-field">
+          <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+        </div>
+        <div class="form-field">
+          <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
+          <select id="assetAccessLevel" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;font-family:inherit">
+            <option value="premium">ویژه هنرجویان ثبت‌نام‌شده</option>
+            <option value="free">رایگان</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label><input id="assetDownloadable" type="checkbox"> اجازه دانلود فایل‌ها</label>
         </div>
         <div class="form-field">
           <label><input id="coursePublished" type="checkbox"> انتشار دوره برای هنرجویان</label>
