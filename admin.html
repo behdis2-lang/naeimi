@@ -348,6 +348,235 @@ async function protectAdminPanel() {
   return true;
 }
 
+
+function makeField(labelText, input, parent) {
+  const wrap = document.createElement('div');
+  wrap.className = 'form-field';
+  const label = document.createElement('label');
+  label.textContent = labelText;
+  wrap.append(label, input);
+  parent.appendChild(wrap);
+  return input;
+}
+
+async function loadChapters(course, parent) {
+  const area = document.createElement('div');
+  area.style.marginTop = '14px';
+  area.style.paddingTop = '12px';
+  area.style.borderTop = '1px dashed var(--line)';
+  const heading = document.createElement('strong');
+  heading.textContent = 'فصل‌ها و درس‌های این دوره';
+  heading.style.color = 'var(--brown)';
+  area.appendChild(heading);
+
+  const addChapter = document.createElement('button');
+  addChapter.type = 'button';
+  addChapter.className = 'secondary-btn';
+  addChapter.style.margin = '10px 0';
+  addChapter.textContent = 'افزودن فصل';
+  area.appendChild(addChapter);
+
+  const chapterList = document.createElement('div');
+  area.appendChild(chapterList);
+  parent.appendChild(area);
+
+  addChapter.addEventListener('click', () => {
+    if (area.querySelector('form')) return;
+    const form = document.createElement('form');
+    form.className = 'panel';
+    const title = document.createElement('input');
+    title.type = 'text';
+    title.required = true;
+    title.maxLength = 180;
+    makeField('عنوان فصل', title, form);
+    const description = document.createElement('textarea');
+    makeField('توضیحات فصل', description, form);
+    const order = document.createElement('input');
+    order.type = 'number';
+    order.value = '0';
+    order.step = '1';
+    makeField('ترتیب نمایش', order, form);
+    const publishedWrap = document.createElement('label');
+    const published = document.createElement('input');
+    published.type = 'checkbox';
+    publishedWrap.append(published, document.createTextNode(' انتشار فصل'));
+    form.appendChild(publishedWrap);
+    const save = document.createElement('button');
+    save.type = 'submit';
+    save.className = 'primary-btn';
+    save.textContent = 'ذخیره فصل';
+    save.style.margin = '12px 8px 0 0';
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.className = 'secondary-btn';
+    cancel.textContent = 'انصراف';
+    cancel.style.marginTop = '12px';
+    const status = document.createElement('p');
+    status.className = 'status-message';
+    form.append(save, cancel, status);
+    area.insertBefore(form, chapterList);
+    cancel.addEventListener('click', () => form.remove());
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      save.disabled = true;
+      status.textContent = 'در حال ذخیره فصل...';
+      const { error } = await supabase.from('chapters').insert({
+        course_id: course.id,
+        title: title.value.trim(),
+        description: description.value.trim() || null,
+        sort_order: Number(order.value) || 0,
+        is_published: published.checked
+      });
+      if (error) {
+        status.textContent = 'خطا در ذخیره فصل: ' + error.message;
+        save.disabled = false;
+        return;
+      }
+      await renderChapters(course, chapterList);
+      form.remove();
+    });
+  });
+
+  await renderChapters(course, chapterList);
+}
+
+async function renderChapters(course, container) {
+  container.replaceChildren();
+  const { data: chapters, error } = await supabase
+    .from('chapters')
+    .select('id,title,description,sort_order,is_published,created_at')
+    .eq('course_id', course.id)
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    const p = document.createElement('p');
+    p.className = 'status-message';
+    p.textContent = 'خطا در دریافت فصل‌ها: ' + error.message;
+    container.appendChild(p);
+    return;
+  }
+  if (!chapters || !chapters.length) {
+    const p = document.createElement('p');
+    p.textContent = 'هنوز فصلی برای این دوره ثبت نشده است.';
+    p.style.fontSize = '12px';
+    p.style.color = 'var(--muted)';
+    container.appendChild(p);
+    return;
+  }
+
+  for (const chapter of chapters) {
+    const card = document.createElement('div');
+    card.className = 'panel';
+    card.style.marginTop = '10px';
+    const title = document.createElement('strong');
+    title.textContent = chapter.title + (chapter.is_published ? ' — منتشرشده' : ' — پیش‌نویس');
+    card.appendChild(title);
+    if (chapter.description) {
+      const desc = document.createElement('p');
+      desc.textContent = chapter.description;
+      desc.style.fontSize = '12px';
+      desc.style.color = 'var(--muted)';
+      card.appendChild(desc);
+    }
+    const lessonsBox = document.createElement('div');
+    lessonsBox.style.marginTop = '10px';
+    const lessonResult = await supabase
+      .from('lessons')
+      .select('id,title,description,sort_order,is_published')
+      .eq('chapter_id', chapter.id)
+      .order('sort_order', { ascending: true });
+    if (lessonResult.error) {
+      const err = document.createElement('p');
+      err.className = 'status-message';
+      err.textContent = 'خطا در دریافت درس‌ها: ' + lessonResult.error.message;
+      lessonsBox.appendChild(err);
+    } else if (!lessonResult.data.length) {
+      const empty = document.createElement('p');
+      empty.textContent = 'هنوز درسی در این فصل ثبت نشده است.';
+      empty.style.fontSize = '12px';
+      empty.style.color = 'var(--muted)';
+      lessonsBox.appendChild(empty);
+    } else {
+      lessonResult.data.forEach(lesson => {
+        const row = document.createElement('p');
+        row.textContent = lesson.sort_order + ' · ' + lesson.title +
+          (lesson.is_published ? ' (منتشرشده)' : ' (پیش‌نویس)');
+        row.style.fontSize = '12px';
+        lessonsBox.appendChild(row);
+      });
+    }
+    const addLesson = document.createElement('button');
+    addLesson.type = 'button';
+    addLesson.className = 'secondary-btn';
+    addLesson.textContent = 'افزودن درس به این فصل';
+    addLesson.addEventListener('click', () => {
+      if (card.querySelector('form')) return;
+      const form = document.createElement('form');
+      form.className = 'panel';
+      const lessonTitle = document.createElement('input');
+      lessonTitle.type = 'text';
+      lessonTitle.required = true;
+      lessonTitle.maxLength = 180;
+      makeField('عنوان درس', lessonTitle, form);
+      const lessonDescription = document.createElement('textarea');
+      makeField('توضیحات درس', lessonDescription, form);
+      const sort = document.createElement('input');
+      sort.type = 'number';
+      sort.value = '0';
+      sort.step = '1';
+      makeField('ترتیب نمایش', sort, form);
+      const url = document.createElement('input');
+      url.type = 'url';
+      url.placeholder = 'اختیاری؛ نشانی محتوای درس';
+      makeField('نشانی محتوا (اختیاری)', url, form);
+      const pubLabel = document.createElement('label');
+      const pub = document.createElement('input');
+      pub.type = 'checkbox';
+      pubLabel.append(pub, document.createTextNode(' انتشار درس'));
+      form.appendChild(pubLabel);
+      const submit = document.createElement('button');
+      submit.type = 'submit';
+      submit.className = 'primary-btn';
+      submit.textContent = 'ذخیره درس';
+      submit.style.margin = '12px 8px 0 0';
+      const cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.className = 'secondary-btn';
+      cancel.textContent = 'انصراف';
+      cancel.style.marginTop = '12px';
+      const status = document.createElement('p');
+      status.className = 'status-message';
+      form.append(submit, cancel, status);
+      card.appendChild(form);
+      cancel.addEventListener('click', () => form.remove());
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        submit.disabled = true;
+        status.textContent = 'در حال ذخیره درس...';
+        const payload = {
+          course_id: course.id,
+          chapter_id: chapter.id,
+          title: lessonTitle.value.trim(),
+          description: lessonDescription.value.trim() || null,
+          sort_order: Number(sort.value) || 0,
+          is_published: pub.checked
+        };
+        if (url.value.trim()) payload.content_url = url.value.trim();
+        const { error } = await supabase.from('lessons').insert(payload);
+        if (error) {
+          status.textContent = 'خطا در ذخیره درس: ' + error.message;
+          submit.disabled = false;
+          return;
+        }
+        await renderChapters(course, container);
+      });
+    });
+    card.append(lessonsBox, addLesson);
+    container.appendChild(card);
+  }
+}
+
 async function loadCourses() {
   const container = document.getElementById('courseList');
   container.textContent = 'در حال دریافت دوره‌ها...';
@@ -408,6 +637,7 @@ async function loadCourses() {
 
     item.appendChild(files);
     container.appendChild(item);
+    await loadChapters(course, item);
   });
 }
 
