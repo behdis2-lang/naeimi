@@ -929,7 +929,7 @@ async function saveCourse(event) {
           : file.type.startsWith('audio/')
             ? 'audio'
             : 'video';
-        const assetTitle = file.name.replace(/\\.[^.]+$/, '') || file.name;
+        const assetTitle = file.name.split('.').slice(0, -1).join('.') || file.name;
 
         const { error: assetInsertError } = await supabase
           .from('media_assets')
