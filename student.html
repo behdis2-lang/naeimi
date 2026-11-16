@@ -90,6 +90,7 @@ border-radius:14px;padding:17px;
 .stat strong{display:block;font-size:23px;color:var(--brown);margin-bottom:7px}
 .stat span{font-size:11px;color:var(--muted)}
 .section-title{font-size:17px;color:var(--brown);margin:0 0 15px}
+@media(max-width:760px){.layout{grid-template-columns:1fr;margin:16px auto}.stats{grid-template-columns:1fr}.header{padding:14px 16px}.sidebar{padding:14px}.menu{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -101,7 +102,7 @@ border-radius:14px;padding:17px;
 <aside class="sidebar">
 <div class="profile">
 <div class="avatar">✧</div>
-<h3>هنرجوی عزیز</h3>
+<h3 id="studentName">هنرجوی عزیز</h3>
 <p>به مسیر شناخت درون خوش آمدی</p>
 </div>
 <nav class="menu">
@@ -110,7 +111,7 @@ border-radius:14px;padding:17px;
 <a href="#progress">پیشرفت آموزشی</a>
 <a href="#files">فایل‌های آموزشی</a>
 <a href="#account">حساب کاربری</a>
-<a href="login.html">خروج از حساب</a>
+<a href="#" id="logoutBtn">خروج از حساب</a>
 </nav>
 </aside>
 <main class="main">
@@ -161,9 +162,9 @@ border-radius:14px;padding:17px;
 <h2 class="section-title">اطلاعات حساب کاربری</h2>
 <div style="background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px">
 <p style="font-size:13px;color:var(--muted);line-height:2">
-نام هنرجو: هنرجوی عزیز<br>
-وضعیت حساب: نمایشی<br>
-نوع عضویت: هنرجو
+نام هنرجو: <strong id="accountName">در حال دریافت...</strong><br>
+ایمیل: <strong id="accountEmail">در حال دریافت...</strong><br>
+نوع عضویت: <strong>هنرجو</strong>
 </p>
 </div>
 </section>
@@ -202,8 +203,18 @@ async function protectStudentPanel() {
     return;
   }
 
+  const displayName = session.user.user_metadata?.full_name || session.user.email || 'هنرجو';
+  document.getElementById('studentName').textContent = displayName;
+  document.getElementById('accountName').textContent = displayName;
+  document.getElementById('accountEmail').textContent = session.user.email || 'ثبت نشده';
   document.documentElement.style.visibility = 'visible';
 }
+
+document.getElementById('logoutBtn').addEventListener('click', async (event) => {
+  event.preventDefault();
+  await supabase.auth.signOut();
+  window.location.replace('login.html');
+});
 
 protectStudentPanel();
 </script>
