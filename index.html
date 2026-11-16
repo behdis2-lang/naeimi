@@ -136,6 +136,15 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 .course-top.dark{background:linear-gradient(90deg,rgba(55,39,22,.48),rgba(168,121,40,.30)),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1100&q=85') center/cover}
 .about-card{background:linear-gradient(145deg,rgba(241,229,207,.38),rgba(229,210,174,.48)),url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1000&q=85') center/cover}
 
+
+/* تصویر مستقل بالای هر یک از سه محور آموزشی */
+.pillar{padding:18px 20px 25px;overflow:hidden}
+.pillar-image{height:155px;width:100%;border-radius:11px;margin:0 0 18px;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:inset 0 0 0 1px rgba(112,86,56,.12)}
+.pillar-image-awakening{background-image:linear-gradient(0deg,rgba(55,39,22,.08),rgba(55,39,22,.02)),url('https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=900&q=85')}
+.pillar-image-self{background-image:linear-gradient(0deg,rgba(55,39,22,.08),rgba(55,39,22,.02)),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85')}
+.pillar-image-growth{background-image:linear-gradient(0deg,rgba(55,39,22,.08),rgba(55,39,22,.02)),url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=85')}
+@media(max-width:800px){.pillar-image{height:175px}}
+
 </style>
 </head>
 <body>
@@ -176,9 +185,9 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 <div class="container">
 <div class="section-head"><div class="section-label">آنچه اینجا یاد می‌گیری</div><h2>سه گام برای عمیق‌تر دیدن زندگی</h2><p>آموزش‌ها در سه محور به‌هم‌پیوسته طراحی شده‌اند تا آگاهی در زندگی روزمره به کار بیاید.</p></div>
 <div class="pillars">
-<article class="pillar"><div class="pillar-icon">◉</div><h3>آگاهی و بیداری معنوی</h3><p>تمرین مشاهده، حضور در لحظه و توجه به تجربه‌های درونی؛ با نگاهی تأملی و واقع‌بینانه به مسیر بیداری.</p></article>
-<article class="pillar"><div class="pillar-icon">⌕</div><h3>خودشناسی و شناخت درون</h3><p>شناخت باورها، گفت‌وگوی درونی، ارزش‌ها و الگوهایی که بر احساسات و تصمیم‌های ما اثر می‌گذارند.</p></article>
-<article class="pillar"><div class="pillar-icon">↗</div><h3>رشد فردی و زندگی آگاهانه</h3><p>تبدیل شناخت به عمل؛ با تمرین‌های کوچک برای مدیریت هیجان، ساخت عادت و انتخاب‌های سنجیده‌تر.</p></article>
+<article class="pillar"><div class="pillar-image pillar-image-awakening" role="img" aria-label="طلوع خورشید در طبیعت، نماد بیداری و آگاهی"></div><div class="pillar-icon">◉</div><h3>آگاهی و بیداری معنوی</h3><p>تمرین مشاهده، حضور در لحظه و توجه به تجربه‌های درونی؛ با نگاهی تأملی و واقع‌بینانه به مسیر بیداری.</p></article>
+<article class="pillar"><div class="pillar-image pillar-image-self" role="img" aria-label="فردی در حال تأمل و خودشناسی در طبیعت"></div><div class="pillar-icon">⌕</div><h3>خودشناسی و شناخت درون</h3><p>شناخت باورها، گفت‌وگوی درونی، ارزش‌ها و الگوهایی که بر احساسات و تصمیم‌های ما اثر می‌گذارند.</p></article>
+<article class="pillar"><div class="pillar-image pillar-image-growth" role="img" aria-label="مسیر سبز رو به نور، نماد رشد فردی"></div><div class="pillar-icon">↗</div><h3>رشد فردی و زندگی آگاهانه</h3><p>تبدیل شناخت به عمل؛ با تمرین‌های کوچک برای مدیریت هیجان، ساخت عادت و انتخاب‌های سنجیده‌تر.</p></article>
 </div>
 </div>
 </section>
