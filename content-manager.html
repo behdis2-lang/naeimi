@@ -130,7 +130,8 @@ async function shiftPage(direction){
 }
 $('pageUp').addEventListener('click',()=>shiftPage(-1));
 $('pageDown').addEventListener('click',()=>shiftPage(1));
-\n$('pageSelect').addEventListener('change',()=>{const page=pages.find(p=>p.id===$('pageSelect').value);if(page)fillPage(page)});
+
+$('pageSelect').addEventListener('change',()=>{const page=pages.find(p=>p.id===$('pageSelect').value);if(page)fillPage(page)});
 $('pageForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!currentPage)return;
  $('savePage').disabled=true;status('pageStatus','در حال ذخیره متن‌های این بخش...');
