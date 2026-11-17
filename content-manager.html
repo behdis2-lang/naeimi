@@ -146,8 +146,7 @@ $('uploadAssets').addEventListener('click',async()=>{
  if(!currentPage)return;
  const files=[...$('assetFiles').files];if(!files.length){status('uploadStatus','ابتدا فایل انتخاب کن.');return}
  if(files.some(f=>f.size>MAX)){status('uploadStatus','حجم هیچ فایلی نباید بیشتر از ۵۰ مگابایت باشد.');return}
- const allowed=['image/jpeg','image/png','image/webp','audio/mpeg','audio/mp4','audio/wav','video/mp4','video/webm'];
- if(files.some(f=>!allowed.includes(f.type))){status('uploadStatus','یکی از فایل‌ها فرمت مجاز ندارد.');return}
+ if(files.some(f=>!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?f.type.startsWith(t):f.type===t))){status('uploadStatus','یکی از فایل‌ها فرمت مجاز ندارد.');return}
  $('uploadAssets').disabled=true;let done=0;
  for(let i=0;i<files.length;i++){
   const file=files[i],safe=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'-');
