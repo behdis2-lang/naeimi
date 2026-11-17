@@ -32,7 +32,7 @@ button:disabled{opacity:.55;cursor:wait}.muted{font-size:12px;color:var(--muted)
 <form id="ticketForm">
 <label for="visitorName">نام (اختیاری)</label><input id="visitorName" maxlength="100" autocomplete="name" placeholder="نام شما">
 <label for="visitorEmail">ایمیل برای دریافت پاسخ (اختیاری)</label><input id="visitorEmail" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com">
-<label for="topic">موضوع سؤال</label><select id="topic" required><option value="">انتخاب کن</option><option>دوره‌ها و ثبت‌نام</option><option>محتوای آموزشی</option><option>مدیتیشن و تمرین‌ها</option><option>مشکل فنی سایت</option><option>سایر موارد</option></select>
+<label for="topic">موضوع سؤال</label><select id="topic" required><option value="">انتخاب کن</option><option value="account">ورود و ثبت‌نام</option><option value="courses">دوره‌ها و درس‌ها</option><option value="payments">پرداخت و سفارش</option><option value="meditation">مدیتیشن و تمرین‌ها</option><option value="chakra">پاکسازی چاکراها</option><option value="kundalini">بیداری کندالینی</option><option value="fengshui">فنگ‌شویی</option><option value="education">سؤال آموزشی و معنوی</option><option value="feedback">پیشنهاد و انتقاد</option><option value="technical">مشکل فنی سایت</option><option value="other">سایر موارد</option></select>
 <label for="message">متن سؤال یا درخواست</label><textarea id="message" required minlength="10" maxlength="4000" placeholder="سؤالت را با جزئیات بنویس..."></textarea>
 <div class="hp" aria-hidden="true"><label for="website">وب‌سایت</label><input id="website" tabindex="-1" autocomplete="off"></div>
 <button id="sendBtn" type="submit">ارسال درخواست</button>
@@ -56,12 +56,12 @@ form.addEventListener('submit',async e=>{
  if(document.getElementById('website').value){status.textContent='درخواست ثبت نشد.';return}
  const name=document.getElementById('visitorName').value.trim();
  const email=document.getElementById('visitorEmail').value.trim();
- const subject=document.getElementById('topic').value;
+ const category=document.getElementById('topic').value;\n const subject=document.getElementById('topic').selectedOptions[0]?.textContent||'سایر موارد';
  const message=document.getElementById('message').value.trim();
  if(message.length<10){status.textContent='لطفاً سؤال را کمی کامل‌تر بنویس.';return}
  btn.disabled=true;status.textContent='در حال ارسال درخواست...';
  try{
-  const {error}=await supabase.from('support_tickets').insert({visitor_name:name||null,visitor_email:email||null,subject,message});
+  const {data:sessionData}=await supabase.auth.getSession();\n  const userId=sessionData?.session?.user?.id||null;\n  const {error}=await supabase.from('support_tickets').insert({visitor_name:name||null,visitor_email:email||null,subject,category,user_id:userId,message});
   if(error)throw error;
   status.textContent='درخواستت با موفقیت ثبت شد. پیام تو به صندوق پشتیبانی مدرس ارسال شد. برای پیگیری، در صورت نیاز از ایمیلی که وارد کرده‌ای استفاده خواهد شد.';
   form.reset();
