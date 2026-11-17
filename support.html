@@ -58,7 +58,7 @@ const form = document.getElementById('ticketForm');
 const status = document.getElementById('formStatus');
 const btn = document.getElementById('sendBtn');
 const authState = document.getElementById('authState');
-let signedInUser = null;
+let signedInUser = null;\nlet authCheckFailed = false;
 
 async function refreshAuthState() {
   try {
@@ -67,7 +67,7 @@ async function refreshAuthState() {
     const session = sessionData?.session;
     if (!session?.user?.id) {
       signedInUser = null;
-      authState.innerHTML = 'وضعیت حساب: <strong>هنوز وارد حساب نشده‌ای.</strong> اگر ثبت‌نام کرده‌ای، ابتدا از <a href="login.html">صفحه ورود</a> وارد شو. در غیر این صورت می‌توانی به‌عنوان مهمان پیام بفرستی.';
+      authState.innerHTML = 'وضعیت حساب: <strong>هنوز وارد حساب نشده‌ای.</strong> توجه: ثبت‌نام به‌تنهایی کافی نیست؛ باید با همان ایمیل از <a href="login.html">صفحه ورود</a> وارد شوی. اگر بدون ورود پیام بفرستی، درخواست به‌عنوان «بازدیدکننده مهمان» ثبت می‌شود.';
       return;
     }
     const { data: userData, error: userError } = await supabase.auth.getUser();
