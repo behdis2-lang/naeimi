@@ -61,9 +61,9 @@ form.addEventListener('submit',async e=>{
  if(message.length<10){status.textContent='لطفاً سؤال را کمی کامل‌تر بنویس.';return}
  btn.disabled=true;status.textContent='در حال ارسال درخواست...';
  try{
-  const {data,error}=await supabase.from('support_tickets').insert({visitor_name:name||null,visitor_email:email||null,subject,message}).select('ticket_code').single();
+  const {error}=await supabase.from('support_tickets').insert({visitor_name:name||null,visitor_email:email||null,subject,message});
   if(error)throw error;
-  status.textContent='درخواستت ثبت شد. کد پیگیری: '+data.ticket_code+' — پاسخ مدرس پس از بررسی ارائه می‌شود.';
+  status.textContent='درخواستت با موفقیت ثبت شد. پیام تو به صندوق پشتیبانی مدرس ارسال شد. برای پیگیری، در صورت نیاز از ایمیلی که وارد کرده‌ای استفاده خواهد شد.';
   form.reset();
  }catch(err){status.textContent='ارسال انجام نشد. لطفاً کمی بعد دوباره تلاش کن. ('+err.message+')'}
  finally{btn.disabled=false}
