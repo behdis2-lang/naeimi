@@ -218,7 +218,7 @@ async function loadAssets(){
    if(file.size>MAX){status('uploadStatus','حجم فایل بیشتر از ۵۰ مگابایت است.');return}
    if(!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?file.type.startsWith(t):file.type===t)){status('uploadStatus','فرمت فایل پشتیبانی نمی‌شود.');return}
    replaceButton.disabled=true;
-   const safe=file.name.replace(/[^\\p{L}\\p{N}._-]+/gu,'-');
+   const safe=file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');
    const newPath='page/'+currentPage.id+'/'+Date.now()+'-replacement-'+safe;
    const {error:upError}=await supabase.storage.from(asset.bucket_id||BUCKET).upload(newPath,file,{contentType:file.type,upsert:false});
    if(upError){replaceButton.disabled=false;status('uploadStatus','بارگذاری فایل جایگزین ناموفق بود: '+upError.message);return}
