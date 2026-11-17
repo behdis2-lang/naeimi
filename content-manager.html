@@ -95,6 +95,7 @@ function fillPage(page){
  $('pageLesson').value=page.lesson||'';$('pagePractice').value=page.practice||'';
  $('pageNext').value=page.next_step||'';$('pagePublished').checked=!!page.is_published;
  status('pageStatus','');$('assetFiles').value='';$('assetDescription').value='';
+ pendingFiles=[];renderPendingFiles();
  loadAssets();
 }
 async function loadPages(){
