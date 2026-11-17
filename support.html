@@ -58,9 +58,11 @@ const form = document.getElementById('ticketForm');
 const status = document.getElementById('formStatus');
 const btn = document.getElementById('sendBtn');
 const authState = document.getElementById('authState');
-let signedInUser = null;\nlet authCheckFailed = false;
+let signedInUser = null;
+let authCheckFailed = false;\nlet authCheckFailed = false;
 
 async function refreshAuthState() {
+  authCheckFailed = false;
   try {
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) throw sessionError;
@@ -83,6 +85,7 @@ async function refreshAuthState() {
     if (accountEmail && !emailInput.value) emailInput.value = accountEmail;
   } catch (error) {
     signedInUser = null;
+    authCheckFailed = true;
     authState.textContent = 'بررسی وضعیت ورود ممکن نشد. برای جلوگیری از ثبت اشتباه، صفحه را تازه‌سازی کن یا دوباره وارد حساب شو. (' + error.message + ')';
   }
 }
@@ -112,6 +115,7 @@ form.addEventListener('submit', async (e) => {
   status.textContent = 'در حال بررسی حساب و ارسال درخواست...';
   try {
     await refreshAuthState();
+    if (authCheckFailed) throw new Error('وضعیت ورود قابل بررسی نیست؛ لطفاً صفحه را تازه‌سازی کن و دوباره وارد حساب شو.');
     const payload = {
       visitor_name: name || null,
       visitor_email: email || signedInUser?.email || null,
