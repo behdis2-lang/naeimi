@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#a87928"><title>مدیریت محتوای بخش‌ها | آگاهی و بیداری معنوی</title>
+<style>
+:root{--cream:#f6efdf;--paper:#fffaf0;--gold:#a87928;--brown:#705638;--ink:#403426;--muted:#796b58;--line:#e8dcc7}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:2}
+header{background:var(--paper);padding:15px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}
+a{color:var(--brown);text-decoration:none}.wrap{max-width:950px;margin:24px auto;padding:0 14px}
+h1{font-size:21px;color:var(--brown)}h2{font-size:16px;color:var(--brown);margin:0 0 12px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:18px;margin:14px 0}
+label{display:block;font-size:12px;color:var(--brown);font-weight:bold;margin:12px 0 5px}
+input:not([type=checkbox]):not([type=file]),textarea,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:white;font:13px Tahoma,Arial,sans-serif;color:var(--ink)}
+textarea{min-height:75px;resize:vertical}input[type=file]{display:block;width:100%;padding:10px;background:white;border:1px dashed var(--brown);border-radius:9px}
+button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9px;padding:10px 15px;margin:7px 5px 0 0}
+.primary{background:var(--gold);color:white}.secondary{background:#eee3d0;color:var(--brown)}.danger{background:#f4dddd;color:#8b2929}
+.small{font-size:11px;color:var(--muted)}.status{font-size:12px;color:var(--brown);white-space:pre-wrap;overflow-wrap:anywhere}
+.asset{border:1px solid var(--line);border-radius:12px;padding:13px;margin:12px 0;background:#fffdf8}
+.asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.checks{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:12px}
+.checks label{display:flex;align-items:center;gap:6px;margin:0}
+@media(max-width:600px){.asset-grid{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header><strong>✧ مدیریت محتوای بخش‌های آموزشی</strong><a href="admin.html">بازگشت به پنل مدیریت ←</a></header>
+<main class="wrap">
+<h1>محتوای اختصاصی هر بخش</h1>
+<p class="small">ابتدا یک بخش را انتخاب کن. متن‌ها و فایل‌هایی که اینجا ثبت می‌کنی فقط در صفحه همان بخش نمایش داده می‌شوند.</p>
+<section class="panel">
+<label for="pageSelect">انتخاب بخش</label><select id="pageSelect"><option value="">در حال دریافت بخش‌ها...</option></select>
+<p id="loadStatus" class="status"></p>
+</section>
+<form id="pageForm" class="panel">
+<h2>متن و آموزش همین بخش</h2>
+<label for="pageTitle">عنوان</label><input id="pageTitle" required maxlength="180">
+<label for="pageEyebrow">عنوان کوچک بالای صفحه</label><input id="pageEyebrow" maxlength="180">
+<label for="pageLead">متن معرفی کوتاه</label><textarea id="pageLead"></textarea>
+<label for="pageIntro">مقدمه آموزشی</label><textarea id="pageIntro" rows="4"></textarea>
+<label for="pagePoints">نکات کلیدی (هر نکته در یک خط)</label><textarea id="pagePoints" rows="5"></textarea>
+<label for="pageLesson">متن آموزش اصلی</label><textarea id="pageLesson" rows="6"></textarea>
+<label for="pagePractice">تمرین کاربردی</label><textarea id="pagePractice" rows="4"></textarea>
+<label for="pageNext">پیشنهاد برای ادامه مسیر</label><textarea id="pageNext"></textarea>
+<div class="checks"><label><input id="pagePublished" type="checkbox" checked> انتشار این صفحه</label></div>
+<button class="primary" type="submit" id="savePage">ذخیره محتوای بخش</button>
+<p id="pageStatus" class="status"></p>
+</form>
+<section class="panel">
+<h2>افزودن عکس، صوت و ویدئو به همین بخش</h2>
+<label for="assetFiles">انتخاب یک یا چند فایل</label><input id="assetFiles" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
+<p class="small">حداکثر حجم هر فایل ۵۰ مگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
+<label for="assetAccess">دسترسی فایل‌های تازه</label><select id="assetAccess"><option value="free">رایگان و قابل نمایش در صفحه عمومی</option><option value="premium">ویژه کاربران مجاز</option></select>
+<label for="assetDescription">توضیح مشترک فایل‌های انتخاب‌شده (اختیاری)</label><textarea id="assetDescription"></textarea>
+<div class="checks"><label><input id="assetDownload" type="checkbox"> اجازه دانلود</label><label><input id="assetPublish" type="checkbox" checked> انتشار فایل‌ها</label></div>
+<button class="primary" id="uploadAssets" type="button">بارگذاری فایل‌ها در این بخش</button>
+<p id="uploadStatus" class="status"></p>
+</section>
+<section class="panel"><h2>فایل‌های ثبت‌شده در همین بخش</h2><div id="assetList" class="small">ابتدا یک بخش را انتخاب کن.</div></section>
+</main>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
+const BUCKET='course-media',MAX=50*1024*1024;
+const $=id=>document.getElementById(id);
+let pages=[],currentPage=null,currentUser=null;
+function status(id,msg){$(id).textContent=msg||''}
+function addField(parent,labelText,control){const wrap=document.createElement('div');const label=document.createElement('label');label.textContent=labelText;wrap.append(label,control);parent.append(wrap)}
+async function protect(){
+ const {data,error}=await supabase.auth.getSession();
+ if(error||!data.session){location.replace('login.html');return false}
+ const {data:profile,error:pe}=await supabase.from('profiles').select('role').eq('id',data.session.user.id).single();
+ if(pe||profile?.role!=='admin'){await supabase.auth.signOut();location.replace('login.html');return false}
+ currentUser=data.session.user;return true;
+}
+function fillPage(page){
+ currentPage=page;
+ $('pageTitle').value=page.title||'';$('pageEyebrow').value=page.eyebrow||'';
+ $('pageLead').value=page.lead||'';$('pageIntro').value=page.intro||'';
+ $('pagePoints').value=Array.isArray(page.points)?page.points.join('\n'):'';
+ $('pageLesson').value=page.lesson||'';$('pagePractice').value=page.practice||'';
+ $('pageNext').value=page.next_step||'';$('pagePublished').checked=!!page.is_published;
+ status('pageStatus','');$('assetFiles').value='';$('assetDescription').value='';
+ loadAssets();
+}
+async function loadPages(){
+ status('loadStatus','در حال دریافت فهرست بخش‌ها...');
+ const {data,error}=await supabase.from('content_pages').select('*').order('sort_order',{ascending:true});
+ if(error){status('loadStatus','خطا در دریافت بخش‌ها. ابتدا migration جدید را در Supabase اجرا کن.\n'+error.message);return}
+ pages=data||[];const select=$('pageSelect');select.replaceChildren();
+ pages.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.title;select.append(o)});
+ if(!pages.length){status('loadStatus','هنوز بخشی ثبت نشده است. migration باید اجرا شود.');return}
+ status('loadStatus','بخش‌ها آماده‌اند.');fillPage(pages[0]);
+}
+$('pageSelect').addEventListener('change',()=>{const page=pages.find(p=>p.id===$('pageSelect').value);if(page)fillPage(page)});
+$('pageForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!currentPage)return;
+ $('savePage').disabled=true;status('pageStatus','در حال ذخیره متن‌های این بخش...');
+ const payload={title:$('pageTitle').value.trim(),eyebrow:$('pageEyebrow').value.trim()||null,lead:$('pageLead').value.trim()||null,intro:$('pageIntro').value.trim()||null,points:$('pagePoints').value.split('\n').map(x=>x.trim()).filter(Boolean),lesson:$('pageLesson').value.trim()||null,practice:$('pagePractice').value.trim()||null,next_step:$('pageNext').value.trim()||null,is_published:$('pagePublished').checked,updated_at:new Date().toISOString()};
+ const {data,error}=await supabase.from('content_pages').update(payload).eq('id',currentPage.id).select('*').single();
+ $('savePage').disabled=false;
+ if(error){status('pageStatus','ذخیره نشد: '+error.message);return}
+ currentPage=data;pages=pages.map(p=>p.id===data.id?data:p);const opt=[...$('pageSelect').options].find(o=>o.value===data.id);if(opt)opt.textContent=data.title;
+ status('pageStatus','محتوای متنی این بخش ذخیره شد.');
+});
+$('uploadAssets').addEventListener('click',async()=>{
+ if(!currentPage)return;
+ const files=[...$('assetFiles').files];if(!files.length){status('uploadStatus','ابتدا فایل انتخاب کن.');return}
+ if(files.some(f=>f.size>MAX)){status('uploadStatus','حجم هیچ فایلی نباید بیشتر از ۵۰ مگابایت باشد.');return}
+ const allowed=['image/jpeg','image/png','image/webp','audio/mpeg','audio/mp4','audio/wav','video/mp4','video/webm'];
+ if(files.some(f=>!allowed.includes(f.type))){status('uploadStatus','یکی از فایل‌ها فرمت مجاز ندارد.');return}
+ $('uploadAssets').disabled=true;let done=0;
+ for(let i=0;i<files.length;i++){
+  const file=files[i],safe=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'-');
+  const path='page/'+currentPage.id+'/'+Date.now()+'-'+i+'-'+safe;
+  status('uploadStatus','بارگذاری '+(i+1)+' از '+files.length+' ...');
+  const {error:upError}=await supabase.storage.from(BUCKET).upload(path,file,{contentType:file.type,upsert:false});
+  if(upError){status('uploadStatus','خطا در بارگذاری '+file.name+': '+upError.message);break}
+  const category=file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
+  const {error:dbError}=await supabase.from('media_assets').insert({owner_type:'page',owner_id:currentPage.id,course_id:null,lesson_id:null,bucket_id:BUCKET,storage_path:path,original_file_name:file.name,title:file.name.replace(/\.[^.]+$/,'')||file.name,description:$('assetDescription').value.trim()||null,mime_type:file.type,file_size:file.size,category,sort_order:i,access_level:$('assetAccess').value,is_downloadable:$('assetDownload').checked,is_published:$('assetPublish').checked,created_by:currentUser.id});
+  if(dbError){await supabase.storage.from(BUCKET).remove([path]);status('uploadStatus','فایل ذخیره شد اما ثبت مشخصات آن خطا داشت: '+dbError.message);break}
+  done++;
+ }
+ $('uploadAssets').disabled=false;
+ if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.');$('assetFiles').value='';await loadAssets()}
+});
+async function loadAssets(){
+ const box=$('assetList');box.textContent='در حال دریافت فایل‌ها...';
+ const {data,error}=await supabase.from('media_assets').select('*').eq('owner_type','page').eq('owner_id',currentPage.id).order('sort_order',{ascending:true}).order('created_at',{ascending:true});
+ if(error){box.textContent='خطا در دریافت فایل‌ها: '+error.message;return}
+ box.replaceChildren();
+ if(!data?.length){box.textContent='هنوز فایلی برای این بخش ثبت نشده است.';return}
+ data.forEach(asset=>{
+  const card=document.createElement('div');card.className='asset';
+  const title=document.createElement('input');title.value=asset.title||'';title.maxLength=180;
+  const desc=document.createElement('textarea');desc.value=asset.description||'';desc.placeholder='توضیح فایل';
+  const order=document.createElement('input');order.type='number';order.value=asset.sort_order||0;
+  const access=document.createElement('select');access.innerHTML='<option value="free">رایگان</option><option value="premium">ویژه</option>';access.value=asset.access_level;
+  addField(card,'عنوان فایل',title);addField(card,'توضیح',desc);
+  const grid=document.createElement('div');grid.className='asset-grid';
+  const orderWrap=document.createElement('div');addField(orderWrap,'ترتیب نمایش',order);
+  const accessWrap=document.createElement('div');addField(accessWrap,'سطح دسترسی',access);
+  grid.append(orderWrap,accessWrap);card.append(grid);
+  const checks=document.createElement('div');checks.className='checks';
+  const downloadable=document.createElement('input');downloadable.type='checkbox';downloadable.checked=asset.is_downloadable;
+  const published=document.createElement('input');published.type='checkbox';published.checked=asset.is_published;
+  const dl=document.createElement('label');dl.append(downloadable,document.createTextNode(' اجازه دانلود'));
+  const pub=document.createElement('label');pub.append(published,document.createTextNode(' انتشار فایل'));
+  checks.append(dl,pub);card.append(checks);
+  const save=document.createElement('button');save.className='primary';save.textContent='ذخیره تغییرات';
+  save.addEventListener('click',async()=>{
+   save.disabled=true;const {error}=await supabase.from('media_assets').update({title:title.value.trim(),description:desc.value.trim()||null,sort_order:Number(order.value)||0,access_level:access.value,is_downloadable:downloadable.checked,is_published:published.checked,updated_at:new Date().toISOString()}).eq('id',asset.id);
+   save.disabled=false;status('uploadStatus',error?'ذخیره تغییرات ناموفق بود: '+error.message:'تغییرات فایل ذخیره شد.');
+  });
+  const del=document.createElement('button');del.className='danger';del.textContent='حذف فایل';
+  del.addEventListener('click',async()=>{
+   if(!confirm('این فایل از این بخش حذف شود؟'))return;del.disabled=true;
+   const {error:removeError}=await supabase.storage.from(asset.bucket_id||BUCKET).remove([asset.storage_path]);
+   if(removeError){del.disabled=false;status('uploadStatus','حذف فایل از فضای ذخیره‌سازی ناموفق بود: '+removeError.message);return}
+   const {error:rowError}=await supabase.from('media_assets').delete().eq('id',asset.id);
+   if(rowError){del.disabled=false;status('uploadStatus','فایل حذف شد اما مشخصات آن حذف نشد: '+rowError.message);return}
+   await loadAssets();status('uploadStatus','فایل حذف شد.');
+  });
+  card.append(save,del);const meta=document.createElement('p');meta.className='small';meta.textContent=(asset.original_file_name||'')+' • '+(asset.mime_type||'');card.prepend(meta);box.append(card);
+ });
+}
+if(await protect())await loadPages();
+</script>
+</body></html>
