@@ -58,6 +58,14 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 <button class="primary" type="submit" id="savePage">ذخیره محتوای بخش</button>
 <p id="pageStatus" class="status"></p>
 </form>
+<section class="panel" id="storageUsagePanel">
+<h2>وضعیت فضای ذخیره‌سازی</h2>
+<div id="storageUsageText" class="status" aria-live="polite">در حال محاسبه فضای مصرف‌شده...</div>
+<div style="height:13px;background:#eee3d0;border-radius:20px;overflow:hidden;margin:12px 0"><div id="storageUsageBar" style="height:100%;width:0%;background:var(--gold);border-radius:20px;transition:width .25s"></div></div>
+<div class="small" id="storageUsageDetails">در حال بررسی فایل‌های مخزن...</div>
+<button class="secondary" id="refreshStorageUsage" type="button">به‌روزرسانی آمار فضا</button>
+<p class="small">این آمار از روی فایل‌های موجود در مخزن خصوصی «course-media» محاسبه می‌شود. سهمیه یک گیگابایتی، مبنای نمایش پلن رایگان است؛ اگر در پروژه مخزن‌های دیگری هم داشته باشی، مصرف آن‌ها در این عدد حساب نمی‌شود.</p>
+</section>
 <section class="panel">
 <h2>افزودن عکس، صوت و ویدئو به همین بخش</h2>
 <label for="assetFiles">افزودن فایل‌ها (می‌توانی چند بار انتخاب کنی)</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime">
@@ -79,6 +87,47 @@ const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quickt
 const $=id=>document.getElementById(id);
 let pages=[],currentPage=null,currentUser=null,pendingFiles=[];
 function status(id,msg){$(id).textContent=msg||''}
+const STORAGE_QUOTA=1024*1024*1024;
+function humanBytes(bytes){
+ if(!Number.isFinite(bytes)||bytes<0)return 'نامشخص';
+ if(bytes<1024)return new Intl.NumberFormat('fa-IR').format(bytes)+' بایت';
+ const units=['کیلوبایت','مگابایت','گیگابایت','ترابایت'];let n=bytes/1024,i=0;
+ while(n>=1024&&i<units.length-1){n/=1024;i++}
+ return new Intl.NumberFormat('fa-IR',{maximumFractionDigits:2}).format(n)+' '+units[i];
+}
+async function calculateStorageUsage(){
+ const textBox=$('storageUsageText'),details=$('storageUsageDetails'),bar=$('storageUsageBar'),button=$('refreshStorageUsage');
+ if(!textBox||!details||!bar)return;
+ if(button)button.disabled=true;
+ textBox.textContent='در حال بررسی پوشه‌ها و فایل‌های مخزن...';details.textContent='لطفاً چند لحظه صبر کن.';
+ try{
+  const folders=[''],visited=new Set();let used=0,count=0;
+  while(folders.length){
+   const folder=folders.shift();if(visited.has(folder))continue;visited.add(folder);
+   let offset=0;
+   while(true){
+    const {data,error}=await supabase.storage.from(BUCKET).list(folder,{limit:1000,offset,sortBy:{column:'name',order:'asc'}});
+    if(error)throw error;
+    const entries=data||[];
+    for(const entry of entries){
+     const path=folder?folder+'/'+entry.name:entry.name;
+     if(entry.id==null&&entry.metadata==null){folders.push(path);continue}
+     const size=Number(entry.metadata?.size);if(Number.isFinite(size)&&size>=0)used+=size;count++;
+    }
+    if(entries.length<1000)break;offset+=entries.length;
+   }
+  }
+  const percent=Math.min(100,used/STORAGE_QUOTA*100);
+  textBox.textContent='مصرف‌شده: '+humanBytes(used)+' از ۱ گیگابایت';
+  details.textContent='فضای باقی‌مانده از سهمیه مبنا: '+humanBytes(Math.max(0,STORAGE_QUOTA-used))+' • تعداد فایل‌ها: '+new Intl.NumberFormat('fa-IR').format(count)+' • میزان استفاده: '+new Intl.NumberFormat('fa-IR',{maximumFractionDigits:1}).format(percent)+'٪';
+  bar.style.width=percent+'%';bar.style.background=percent>=90?'#b54735':'var(--gold)';
+ }catch(error){
+  textBox.textContent='محاسبه فضای ذخیره‌سازی انجام نشد.';
+  details.textContent='خطا: '+(error?.message||'دریافت فهرست فایل‌ها ممکن نشد')+' — دسترسی خواندن مخزن را بررسی کن.';
+  bar.style.width='0%';
+ }finally{if(button)button.disabled=false}
+}
+
 function addField(parent,labelText,control){const wrap=document.createElement('div');const label=document.createElement('label');label.textContent=labelText;wrap.append(label,control);parent.append(wrap)}
 async function protect(){
  const {data,error}=await supabase.auth.getSession();
@@ -187,7 +236,7 @@ $('uploadAssets').addEventListener('click',async()=>{
  }
  pendingFiles=pendingFiles.filter(x=>!completed.includes(x.id));renderPendingFiles();
  $('uploadAssets').disabled=false;
- if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.'+(pendingFiles.length?' فایل‌های باقی‌مانده در صف حفظ شدند.':''));await loadAssets()}
+ if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.'+(pendingFiles.length?' فایل‌های باقی‌مانده در صف حفظ شدند.':''));await loadAssets();await calculateStorageUsage()}
 });
 async function loadAssets(){
  if(!currentPage)return;
@@ -254,7 +303,7 @@ async function loadAssets(){
    const {error:oldError}=await supabase.storage.from(asset.bucket_id||BUCKET).remove([asset.storage_path]);
    replaceButton.disabled=false;
    status('uploadStatus',oldError?'فایل جایگزین شد؛ پاک‌کردن نسخه قبلی نیازمند بررسی مدیر است.':'فایل با موفقیت جایگزین شد.');
-   await loadAssets();
+   await loadAssets();await calculateStorageUsage();
   });
   card.append(replaceButton);
   const save=document.createElement('button');save.className='primary';save.textContent='ذخیره تغییرات';
@@ -285,11 +334,12 @@ async function loadAssets(){
    if(removeError){del.disabled=false;status('uploadStatus','حذف فایل از فضای ذخیره‌سازی ناموفق بود: '+removeError.message);return}
    const {error:rowError}=await supabase.from('media_assets').delete().eq('id',asset.id);
    if(rowError){del.disabled=false;status('uploadStatus','فایل حذف شد اما مشخصات آن حذف نشد: '+rowError.message);return}
-   await loadAssets();status('uploadStatus','فایل حذف شد.');
+   await loadAssets();await calculateStorageUsage();status('uploadStatus','فایل حذف شد.');
   });
   card.append(save,del);const meta=document.createElement('p');meta.className='small';meta.textContent=(asset.original_file_name||'')+' • '+(asset.mime_type||'');card.prepend(meta);box.append(card);
  }
 }
-if(await protect())await loadPages();
+$('refreshStorageUsage').addEventListener('click',calculateStorageUsage);
+if(await protect()){await loadPages();await calculateStorageUsage();}
 </script>
 </body></html>
