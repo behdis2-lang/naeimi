@@ -297,7 +297,8 @@ footer{background:#59432d;color:#fff5e5;padding:34px 0 20px}
 const menuBtn=document.getElementById('menuBtn');
 const navLinks=document.getElementById('navLinks');
 menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));\ndocument.querySelectorAll('.course-click').forEach(card=>{const go=()=>{window.location.href=card.dataset.href};card.addEventListener('click',e=>{if(!e.target.closest('a,button'))go()});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+document.querySelectorAll('.course-click').forEach(card=>{const go=()=>{window.location.href=card.dataset.href};card.addEventListener('click',e=>{if(!e.target.closest('a,button'))go()});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
 </script>
 
 <script type="module">
