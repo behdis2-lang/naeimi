@@ -29,6 +29,7 @@ button:disabled{opacity:.55;cursor:wait}.muted{font-size:12px;color:var(--muted)
 <p class="lead">سؤالت را برای ما بفرست. برای ارسال پیام نیازی به ساخت حساب کاربری نیست. اگر ایمیل یا راه تماس بگذاری، می‌توانیم پاسخ را به تو برسانیم.</p>
 <section class="card">
 <h2 style="font-size:17px;color:var(--brown);margin:0">ارسال درخواست پشتیبانی</h2>
+<div id="authState" class="status" style="background:#f2e8d5;border-radius:10px;padding:12px;margin:12px 0">در حال بررسی وضعیت ورود...</div>
 <form id="ticketForm">
 <label for="visitorName">نام (اختیاری)</label><input id="visitorName" maxlength="100" autocomplete="name" placeholder="نام شما">
 <label for="visitorEmail">ایمیل برای دریافت پاسخ (اختیاری)</label><input id="visitorEmail" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com">
@@ -49,24 +50,88 @@ button:disabled{opacity:.55;cursor:wait}.muted{font-size:12px;color:var(--muted)
 </main>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
-const form=document.getElementById('ticketForm'),status=document.getElementById('formStatus'),btn=document.getElementById('sendBtn');
-form.addEventListener('submit',async e=>{
- e.preventDefault();status.textContent='';
- if(document.getElementById('website').value){status.textContent='درخواست ثبت نشد.';return}
- const name=document.getElementById('visitorName').value.trim();
- const email=document.getElementById('visitorEmail').value.trim();
- const category=document.getElementById('topic').value;\n const subject=document.getElementById('topic').selectedOptions[0]?.textContent||'سایر موارد';
- const message=document.getElementById('message').value.trim();
- if(message.length<10){status.textContent='لطفاً سؤال را کمی کامل‌تر بنویس.';return}
- btn.disabled=true;status.textContent='در حال ارسال درخواست...';
- try{
-  const {data:sessionData}=await supabase.auth.getSession();\n  const userId=sessionData?.session?.user?.id||null;\n  const {error}=await supabase.from('support_tickets').insert({visitor_name:name||null,visitor_email:email||null,subject,category,user_id:userId,message});
-  if(error)throw error;
-  status.textContent='درخواستت با موفقیت ثبت شد. پیام تو به صندوق پشتیبانی مدرس ارسال شد. برای پیگیری، در صورت نیاز از ایمیلی که وارد کرده‌ای استفاده خواهد شد.';
-  form.reset();
- }catch(err){status.textContent='ارسال انجام نشد. لطفاً کمی بعد دوباره تلاش کن. ('+err.message+')'}
- finally{btn.disabled=false}
+const supabase = createClient(
+  'https://zowmefbbhowjyozynpay.supabase.co',
+  'sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS'
+);
+const form = document.getElementById('ticketForm');
+const status = document.getElementById('formStatus');
+const btn = document.getElementById('sendBtn');
+const authState = document.getElementById('authState');
+let signedInUser = null;
+
+async function refreshAuthState() {
+  try {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    const session = sessionData?.session;
+    if (!session?.user?.id) {
+      signedInUser = null;
+      authState.innerHTML = 'وضعیت حساب: <strong>هنوز وارد حساب نشده‌ای.</strong> اگر ثبت‌نام کرده‌ای، ابتدا از <a href="login.html">صفحه ورود</a> وارد شو. در غیر این صورت می‌توانی به‌عنوان مهمان پیام بفرستی.';
+      return;
+    }
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+    signedInUser = userData?.user || null;
+    if (!signedInUser?.id) {
+      authState.innerHTML = 'وضعیت حساب: <strong>ورود تأیید نشد.</strong> لطفاً دوباره از <a href="login.html">صفحه ورود</a> وارد شو.';
+      return;
+    }
+    const accountEmail = signedInUser.email || '';
+    authState.textContent = 'وضعیت حساب: واردشده' + (accountEmail ? ' با ایمیل ' + accountEmail : '') + ' — درخواستت به‌عنوان هنرجوی ثبت‌نام‌شده ثبت می‌شود.';
+    const emailInput = document.getElementById('visitorEmail');
+    if (accountEmail && !emailInput.value) emailInput.value = accountEmail;
+  } catch (error) {
+    signedInUser = null;
+    authState.textContent = 'بررسی وضعیت ورود ممکن نشد. برای جلوگیری از ثبت اشتباه، صفحه را تازه‌سازی کن یا دوباره وارد حساب شو. (' + error.message + ')';
+  }
+}
+
+await refreshAuthState();
+supabase.auth.onAuthStateChange(() => {
+  setTimeout(refreshAuthState, 0);
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  status.textContent = '';
+  if (document.getElementById('website').value) {
+    status.textContent = 'درخواست ثبت نشد.';
+    return;
+  }
+  const name = document.getElementById('visitorName').value.trim();
+  const email = document.getElementById('visitorEmail').value.trim();
+  const category = document.getElementById('topic').value;
+  const subject = document.getElementById('topic').selectedOptions[0]?.textContent || 'سایر موارد';
+  const message = document.getElementById('message').value.trim();
+  if (message.length < 10) {
+    status.textContent = 'لطفاً سؤال را کمی کامل‌تر بنویس.';
+    return;
+  }
+  btn.disabled = true;
+  status.textContent = 'در حال بررسی حساب و ارسال درخواست...';
+  try {
+    await refreshAuthState();
+    const payload = {
+      visitor_name: name || null,
+      visitor_email: email || signedInUser?.email || null,
+      subject,
+      category,
+      user_id: signedInUser?.id || null,
+      message
+    };
+    const { error } = await supabase.from('support_tickets').insert(payload);
+    if (error) throw error;
+    status.textContent = signedInUser
+      ? 'درخواستت با موفقیت و با حساب کاربری‌ات ثبت شد. در پنل مدرس به‌عنوان هنرجوی ثبت‌نام‌شده دیده می‌شود.'
+      : 'درخواستت با موفقیت به‌عنوان بازدیدکننده مهمان ثبت شد.';
+    form.reset();
+    if (signedInUser?.email) document.getElementById('visitorEmail').value = signedInUser.email;
+  } catch (error) {
+    status.textContent = 'ارسال انجام نشد. لطفاً دوباره تلاش کن. (' + error.message + ')';
+  } finally {
+    btn.disabled = false;
+  }
 });
 </script>
 </body></html>
