@@ -167,7 +167,7 @@ async function loadAssets(){
  if(error){box.textContent='خطا در دریافت فایل‌ها: '+error.message;return}
  box.replaceChildren();
  if(!data?.length){box.textContent='هنوز فایلی برای این بخش ثبت نشده است.';return}
- data.forEach(asset=>{
+ for (const asset of data) {
   const card=document.createElement('div');card.className='asset';
   const title=document.createElement('input');title.value=asset.title||'';title.maxLength=180;
   const desc=document.createElement('textarea');desc.value=asset.description||'';desc.placeholder='توضیح فایل';
@@ -259,7 +259,7 @@ async function loadAssets(){
    await loadAssets();status('uploadStatus','فایل حذف شد.');
   });
   card.append(save,del);const meta=document.createElement('p');meta.className='small';meta.textContent=(asset.original_file_name||'')+' • '+(asset.mime_type||'');card.prepend(meta);box.append(card);
- });
+ }
 }
 if(await protect())await loadPages();
 </script>
