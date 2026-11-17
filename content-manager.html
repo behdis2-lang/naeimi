@@ -162,6 +162,7 @@ $('uploadAssets').addEventListener('click',async()=>{
  if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.');$('assetFiles').value='';await loadAssets()}
 });
 async function loadAssets(){
+ if(!currentPage)return;
  const box=$('assetList');box.textContent='در حال دریافت فایل‌ها...';
  const {data,error}=await supabase.from('media_assets').select('*').eq('owner_type','page').eq('owner_id',currentPage.id).order('sort_order',{ascending:true}).order('created_at',{ascending:true});
  if(error){box.textContent='خطا در دریافت فایل‌ها: '+error.message;return}
