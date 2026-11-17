@@ -60,8 +60,9 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 </form>
 <section class="panel">
 <h2>افزودن عکس، صوت و ویدئو به همین بخش</h2>
-<label for="assetFiles">انتخاب یک یا چند فایل</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime">
-<p class="small">فرمت‌های رایج عکس، ویدئو و ویس موبایل پشتیبانی می‌شوند؛ حداکثر حجم هر فایل ۵۰ مگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
+<label for="assetFiles">افزودن فایل‌ها (می‌توانی چند بار انتخاب کنی)</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime">
+<div id="pendingFiles" class="small" aria-live="polite">هنوز فایلی برای بارگذاری انتخاب نشده است.</div>
+<p class="small">می‌توانی در چند نوبت فایل اضافه کنی؛ فهرست انتخاب‌ها تا زمان بارگذاری حفظ می‌شود. حداکثر حجم هر فایل در پلن رایگان Supabase برابر ۵۰ مگابایت و کل فضای ذخیره‌سازی رایگان ۱ گیگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
 <label for="assetAccess">دسترسی فایل‌های تازه</label><select id="assetAccess"><option value="free">رایگان و قابل نمایش در صفحه عمومی</option><option value="premium">ویژه کاربران مجاز</option></select>
 <label for="assetDescription">توضیح مشترک فایل‌های انتخاب‌شده (اختیاری)</label><textarea id="assetDescription"></textarea>
 <div class="checks"><label><input id="assetDownload" type="checkbox"> اجازه دانلود</label><label><input id="assetPublish" type="checkbox" checked> انتشار فایل‌ها</label></div>
@@ -76,7 +77,7 @@ const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publi
 const BUCKET='course-media',MAX=50*1024*1024;
 const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime'];
 const $=id=>document.getElementById(id);
-let pages=[],currentPage=null,currentUser=null;
+let pages=[],currentPage=null,currentUser=null,pendingFiles=[];
 function status(id,msg){$(id).textContent=msg||''}
 function addField(parent,labelText,control){const wrap=document.createElement('div');const label=document.createElement('label');label.textContent=labelText;wrap.append(label,control);parent.append(wrap)}
 async function protect(){
@@ -143,25 +144,49 @@ $('pageForm').addEventListener('submit',async e=>{
  currentPage=data;pages=pages.map(p=>p.id===data.id?data:p);const opt=[...$('pageSelect').options].find(o=>o.value===data.id);if(opt)opt.textContent=data.title;
  status('pageStatus','محتوای متنی این بخش ذخیره شد.');
 });
+function renderPendingFiles(){
+ const box=$('pendingFiles');box.replaceChildren();
+ if(!pendingFiles.length){box.textContent='هنوز فایلی برای بارگذاری انتخاب نشده است.';return}
+ const total=pendingFiles.reduce((n,x)=>n+x.file.size,0);
+ const summary=document.createElement('p');summary.textContent=pendingFiles.length+' فایل در صف • مجموع '+(total/1024/1024).toFixed(1)+' مگابایت';box.append(summary);
+ pendingFiles.forEach(item=>{
+  const row=document.createElement('div');row.className='asset-grid';
+  const name=document.createElement('span');name.textContent=item.file.name+' ('+(item.file.size/1024/1024).toFixed(1)+' MB)';
+  const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='حذف از فهرست';
+  remove.addEventListener('click',()=>{pendingFiles=pendingFiles.filter(x=>x.id!==item.id);renderPendingFiles()});
+  row.append(name,remove);box.append(row);
+ });
+}
+$('assetFiles').addEventListener('change',()=>{
+ const incoming=[...$('assetFiles').files];let added=0,issues=[];
+ for(const file of incoming){
+  if(file.size>MAX){issues.push(file.name+': بیشتر از ۵۰ مگابایت');continue}
+  if(!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?file.type.startsWith(t):file.type===t)){issues.push(file.name+': فرمت پشتیبانی نمی‌شود');continue}
+  pendingFiles.push({id:crypto.randomUUID(),file});added++;
+ }
+ $('assetFiles').value='';
+ renderPendingFiles();
+ status('uploadStatus',(added?added+' فایل به صف اضافه شد. ':'')+(issues.length?'موارد ردشده: '+issues.join('؛ '):''));
+});
 $('uploadAssets').addEventListener('click',async()=>{
  if(!currentPage)return;
- const files=[...$('assetFiles').files];if(!files.length){status('uploadStatus','ابتدا فایل انتخاب کن.');return}
- if(files.some(f=>f.size>MAX)){status('uploadStatus','حجم هیچ فایلی نباید بیشتر از ۵۰ مگابایت باشد.');return}
- if(files.some(f=>!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?f.type.startsWith(t):f.type===t))){status('uploadStatus','یکی از فایل‌ها فرمت مجاز ندارد.');return}
- $('uploadAssets').disabled=true;let done=0;
- for(let i=0;i<files.length;i++){
-  const file=files[i],safe=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'-');
+ if(!pendingFiles.length){status('uploadStatus','ابتدا فایل اضافه کن.');return}
+ const batch=[...pendingFiles];
+ $('uploadAssets').disabled=true;let done=0,completed=[];
+ for(let i=0;i<batch.length;i++){
+  const {file,id}=batch[i],safe=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'-');
   const path='page/'+currentPage.id+'/'+Date.now()+'-'+i+'-'+safe;
-  status('uploadStatus','بارگذاری '+(i+1)+' از '+files.length+' ...');
+  status('uploadStatus','بارگذاری '+(i+1)+' از '+batch.length+' ...');
   const {error:upError}=await supabase.storage.from(BUCKET).upload(path,file,{contentType:file.type,upsert:false});
   if(upError){status('uploadStatus','خطا در بارگذاری '+file.name+': '+upError.message);break}
   const category=file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
-  const {error:dbError}=await supabase.from('media_assets').insert({owner_type:'page',owner_id:currentPage.id,course_id:null,lesson_id:null,bucket_id:BUCKET,storage_path:path,original_file_name:file.name,title:file.name.replace(/\.[^.]+$/,'')||file.name,description:$('assetDescription').value.trim()||null,mime_type:file.type,file_size:file.size,category,sort_order:i,access_level:$('assetAccess').value,is_downloadable:$('assetDownload').checked,is_published:$('assetPublish').checked,created_by:currentUser.id});
-  if(dbError){await supabase.storage.from(BUCKET).remove([path]);status('uploadStatus','فایل ذخیره شد اما ثبت مشخصات آن خطا داشت: '+dbError.message);break}
-  done++;
+  const {error:dbError}=await supabase.from('media_assets').insert({owner_type:'page',owner_id:currentPage.id,course_id:null,lesson_id:null,bucket_id:BUCKET,storage_path:path,original_file_name:file.name,title:file.name.replace(/\.[^.]+$/,'')||file.name,description:$('assetDescription').value.trim()||null,mime_type:file.type,file_size:file.size,category,sort_order:Date.now()+i,access_level:$('assetAccess').value,is_downloadable:$('assetDownload').checked,is_published:$('assetPublish').checked,created_by:currentUser.id});
+  if(dbError){await supabase.storage.from(BUCKET).remove([path]);status('uploadStatus','فایل بارگذاری شد اما ثبت مشخصات آن خطا داشت: '+dbError.message);break}
+  done++;completed.push(id);
  }
+ pendingFiles=pendingFiles.filter(x=>!completed.includes(x.id));renderPendingFiles();
  $('uploadAssets').disabled=false;
- if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.');$('assetFiles').value='';await loadAssets()}
+ if(done){status('uploadStatus',done+' فایل در بخش «'+currentPage.title+'» ثبت شد.'+(pendingFiles.length?' فایل‌های باقی‌مانده در صف حفظ شدند.':''));await loadAssets()}
 });
 async function loadAssets(){
  if(!currentPage)return;
