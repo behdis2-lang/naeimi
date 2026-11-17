@@ -72,7 +72,8 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
-const BUCKET='course-media',MAX=50*1024*1024;\nconst ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime'];
+const BUCKET='course-media',MAX=50*1024*1024;
+const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime'];
 const $=id=>document.getElementById(id);
 let pages=[],currentPage=null,currentUser=null;
 function status(id,msg){$(id).textContent=msg||''}
