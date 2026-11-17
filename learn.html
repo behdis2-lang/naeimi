@@ -4,6 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#a87928"><title>آموزش | آگاهی و بیداری معنوی</title>
 <style>
+.media-card{border:1px solid var(--line);border-radius:12px;padding:15px;margin:12px 0;background:#fffdf8}.media-card img,.media-card video{display:block;max-width:100%;width:100%;max-height:430px;object-fit:contain;border-radius:9px;background:#eee}.media-card audio{width:100%;margin-top:10px}.media-title{font-weight:700;color:var(--forest);margin:0 0 6px}.media-desc{font-size:13px;color:var(--muted)}
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
 :root{--forest:#705638;--gold:#a87928;--cream:#f6efdf;--paper:#fffaf0;--ink:#403426;--muted:#796b58;--line:#e8dcc7}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:2}
@@ -20,9 +21,12 @@ ul{padding-right:22px;color:var(--muted)}li{margin:7px 0}.actions{display:flex;f
 <section class="panel"><h2>در این بخش چه می‌آموزی؟</h2><div id="intro"></div><ul id="points"></ul></section>
 <section class="panel"><h2>یک نگاه عمیق‌تر</h2><div id="lesson"></div><div class="exercise"><h3>تمرین کاربردی</h3><div id="practice"></div></div></section>
 <section class="panel"><h2>برای ادامه مسیر</h2><p id="next"></p><p class="notice">این آموزش برای یادگیری و تأمل فردی تهیه شده است و جایگزین خدمات تخصصی پزشکی یا روان‌شناختی نیست.</p></section>
+<section class="panel" id="pageMedia" hidden><h2>محتوای تصویری و صوتی این بخش</h2><div id="mediaList"></div></section>
 <div class="actions"><a class="btn" href="student.html">ورود به پنل آموزش و محتوای دوره‌ها</a><a class="btn secondary" href="index.html#pillars">بازگشت به حوزه‌های آموزش</a></div>
 </main><footer>آگاهی • بیداری معنوی • خودشناسی</footer>
-<script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const supabase=createClient("https://zowmefbbhowjyozynpay.supabase.co","sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS");
 const content={
 awakening:{eyebrow:'محور اول • آگاهی و بیداری معنوی',title:'آگاهی و بیداری معنوی',lead:'بیداری را از مشاهده تجربه اکنون آغاز کن؛ بدون عجله برای نتیجه‌گیری.',intro:'آگاهی یعنی بتوانی آنچه در ذهن، بدن و احساساتت می‌گذرد ببینی و میان مشاهده و واکنش، کمی فضا ایجاد کنی. در این مسیر قرار نیست هر اتفاقی را نشانه‌ای قطعی بدانیم؛ تجربه را با کنجکاوی و واقع‌بینی بررسی می‌کنیم.',points:['تمرین حضور در لحظه و توجه به تجربه مستقیم','تشخیص تفاوت مشاهده، تفسیر و قضاوت','دیدن افکار بدون یکی دانستن خودت با هر فکر','پرسیدن سؤال‌های روشن به‌جای نتیجه‌گیری شتاب‌زده'],lesson:'برای چند لحظه توجهت را به تنفس، صداهای اطراف و تماس پاها با زمین بده. اگر فکری آمد، لازم نیست با آن بجنگی یا دنبالش بروی؛ فقط متوجه شو که فکری در حال عبور است. همین برگشت آرام به تجربه اکنون، تمرینی ساده برای تقویت حضور است.',practice:'سه بار در روز، هر بار یک دقیقه مکث کن. بنویس اکنون چه فکری داری، چه احساسی را تجربه می‌کنی و در بدنت چه حسی وجود دارد. فقط ثبت کن؛ فعلاً نیازی به تغییر دادن نیست.',next:'پس از تمرین مشاهده، به سراغ شناخت باورها و الگوهایی برو که روی واکنش‌هایت اثر می‌گذارند.'},
 self:{eyebrow:'محور دوم • خودشناسی و شناخت درون',title:'خودشناسی و شناخت درون',lead:'خودشناسی یعنی شناختن باورها، ارزش‌ها، نیازها و الگوهایی که رفتار روزمره‌ات را شکل می‌دهند.',intro:'بخش زیادی از واکنش‌های ما از عادت‌ها و باورهایی می‌آید که کمتر به آن‌ها توجه کرده‌ایم. وقتی یک واکنش تکراری را می‌شناسی، فرصت پیدا می‌کنی انتخاب تازه‌ای داشته باشی.',points:['شناخت ارزش‌های شخصی و اولویت‌ها','بررسی گفت‌وگوی درونی و باورهای محدودکننده','شناخت محرک‌های احساسی و واکنش‌های تکراری','تمایز میان واقعیت، برداشت و پیش‌بینی ذهن'],lesson:'یک موقعیت اخیر را به یاد بیاور که ناراحت یا عصبانی شدی. اتفاق بیرونی را در یک جمله بنویس. سپس برداشت ذهنت و احساست را جداگانه ثبت کن. ممکن است متوجه شوی آنچه تو را رنجانده فقط خود اتفاق نبوده، بلکه معنایی بوده که به آن داده‌ای.',practice:'جدولی سه‌ستونی بساز: «اتفاق»، «فکری که از ذهنم گذشت»، «احساسی که تجربه کردم». در پایان از خودت بپرس چه برداشت دیگری هم ممکن است وجود داشته باشد؟',next:'شناخت زمانی ارزشمندتر می‌شود که در انتخاب‌ها و رفتارهای روزانه به کار گرفته شود.'},
@@ -36,4 +40,42 @@ const key=new URLSearchParams(location.search).get('topic')||'awakening';const d
 document.title=data.title+' | آگاهی و بیداری معنوی';
 document.getElementById('eyebrow').textContent=data.eyebrow;document.getElementById('title').textContent=data.title;document.getElementById('lead').textContent=data.lead;document.getElementById('intro').textContent=data.intro;document.getElementById('lesson').textContent=data.lesson;document.getElementById('practice').textContent=data.practice;document.getElementById('next').textContent=data.next;
 document.getElementById('points').innerHTML=data.points.map(x=>'<li>'+x+'</li>').join('');
+
+async function loadSectionContent(){
+  try{
+    const {data:page,error}=await supabase.from('content_pages').select('*').eq('slug',key).eq('is_published',true).maybeSingle();
+    if(error||!page)return;
+    if(page.title)document.getElementById('title').textContent=page.title;
+    if(page.eyebrow)document.getElementById('eyebrow').textContent=page.eyebrow;
+    if(page.lead)document.getElementById('lead').textContent=page.lead;
+    if(page.intro)document.getElementById('intro').textContent=page.intro;
+    if(page.lesson)document.getElementById('lesson').textContent=page.lesson;
+    if(page.practice)document.getElementById('practice').textContent=page.practice;
+    if(page.next_step)document.getElementById('next').textContent=page.next_step;
+    if(Array.isArray(page.points)&&page.points.length){
+      const list=document.getElementById('points');list.replaceChildren();
+      page.points.forEach(point=>{const li=document.createElement('li');li.textContent=point;list.appendChild(li)});
+    }
+    const {data:assets}=await supabase.from('media_assets').select('id,title,description,mime_type,storage_path,bucket_id,is_downloadable,sort_order').eq('owner_type','page').eq('owner_id',page.id).eq('is_published',true).eq('access_level','free').order('sort_order',{ascending:true});
+    if(!assets||!assets.length)return;
+    const section=document.getElementById('pageMedia'),list=document.getElementById('mediaList');
+    for(const asset of assets){
+      const {data:signed,error:signedError}=await supabase.storage.from(asset.bucket_id||'course-media').createSignedUrl(asset.storage_path,1800);
+      if(signedError||!signed?.signedUrl)continue;
+      const card=document.createElement('article');card.className='media-card';
+      const title=document.createElement('p');title.className='media-title';title.textContent=asset.title||'محتوای آموزشی';card.appendChild(title);
+      if(asset.description){const desc=document.createElement('p');desc.className='media-desc';desc.textContent=asset.description;card.appendChild(desc)}
+      let media;
+      if((asset.mime_type||'').startsWith('image/')){media=document.createElement('img');media.alt=asset.title||'تصویر آموزشی';media.src=signed.signedUrl}
+      else if((asset.mime_type||'').startsWith('audio/')){media=document.createElement('audio');media.controls=true;media.preload='none';media.src=signed.signedUrl}
+      else if((asset.mime_type||'').startsWith('video/')){media=document.createElement('video');media.controls=true;media.preload='metadata';media.playsInline=true;media.src=signed.signedUrl}
+      if(media)card.appendChild(media);
+      if(asset.is_downloadable){const download=document.createElement('a');download.className='btn secondary';download.href=signed.signedUrl;download.download='';download.textContent='دریافت فایل';card.appendChild(download)}
+      list.appendChild(card);
+    }
+    if(list.children.length)section.hidden=false;
+  }catch(error){console.warn('Section content could not be loaded',error)}
+}
+loadSectionContent();
+
 </script></body></html>
