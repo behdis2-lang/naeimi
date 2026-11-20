@@ -214,7 +214,7 @@ async function loadStudentContent(session,isPreview=false){
     else completedLessonIds.delete(lessonId);
     $('progressCount').textContent=String(completedLessonIds.size);
     checkbox.disabled=false;
-  },{once:true});
+  });
 }
 $('logoutBtn').addEventListener('click',async event=>{event.preventDefault();await supabase.auth.signOut();window.location.replace('login.html');});
 try{
