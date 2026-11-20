@@ -94,8 +94,8 @@ background:#f2e8d5;color:#705638;font-size:12px;line-height:2;
 <h2>خوش برگشتی!</h2>
 <p class="desc">برای ورود به حساب کاربری اطلاعاتت را وارد کن.</p>
 <div class="field">
-<label for="loginEmail">ایمیل یا شماره موبایل</label>
-<input id="loginEmail" type="text" placeholder="ایمیل یا شماره موبایل" required>
+<label for="loginEmail">ایمیل</label>
+<input id="loginEmail" type="email" placeholder="example@email.com" autocomplete="email" required>
 </div>
 <div class="field">
 <label for="loginPassword">رمز عبور</label>
@@ -222,7 +222,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const password = document.getElementById('loginPassword').value;
 
     if (!email.includes('@')) {
-      demoMessage('فعلاً برای ورود، آدرس ایمیل را وارد کن.');
+      demoMessage('برای ورود، آدرس ایمیل معتبر را وارد کن.');
       return;
     }
 
