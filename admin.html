@@ -228,16 +228,16 @@ footer{
 
 <section class="stats">
   <div class="stat">
-    <strong>۰</strong>
-    <span>هنرجویان ثبت‌شده</span>
+    <strong id="enrollmentCount">—</strong>
+    <span>ثبت‌نام‌های ثبت‌شده</span>
   </div>
   <div class="stat">
-    <strong id="courseCount">۰</strong>
+    <strong id="courseCount">—</strong>
     <span>دوره‌های ثبت‌شده</span>
   </div>
   <div class="stat">
-    <strong>۰</strong>
-    <span>سفارش‌ها</span>
+    <strong id="publishedCourseCount">—</strong>
+    <span>دوره‌های منتشرشده</span>
   </div>
 </section>
 
@@ -245,7 +245,7 @@ footer{
   <h2 class="section-title">مدیریت هنرجویان</h2>
   <div class="panel">
     <p style="font-size:13px;color:var(--muted);line-height:2">
-      در این قسمت فهرست هنرجویان، اطلاعات حساب‌ها و وضعیت دسترسی به دوره‌ها نمایش داده خواهد شد.
+      اطلاعات ثبت‌نام‌ها در آمار داشبورد محاسبه می‌شود؛ اما فهرست نام و ایمیل هنرجویان هنوز به نمای مدیریتی امن متصل نشده است. برای جلوگیری از نمایش اطلاعات ناقص یا افشای داده حساب‌ها، این بخش تا ایجاد دسترسی امن به پروفایل‌ها غیرفعال است.
     </p>
   </div>
 </section>
@@ -314,7 +314,7 @@ footer{
   <h2 class="section-title">مدیریت سفارش‌ها و پرداخت‌ها</h2>
   <div class="panel">
     <p style="font-size:12px;color:var(--muted);line-height:2">
-      نمایش سفارش‌های هنرجویان، وضعیت پرداخت و سوابق خرید دوره‌ها.
+      در نسخه فعلی جدول سفارش و تراکنش پرداخت در ساختار قابل‌بررسی پروژه وجود ندارد و درگاه پرداخت نیز متصل نشده است؛ بنابراین هیچ سفارش یا وضعیت پرداخت ساختگی نمایش داده نمی‌شود. این بخش پس از راه‌اندازی درگاه و ثبت امن تراکنش‌ها فعال خواهد شد.
     </p>
   </div>
 </section>
@@ -323,7 +323,7 @@ footer{
   <h2 class="section-title">گزارش‌ها و آمار</h2>
   <div class="panel">
     <p style="font-size:12px;color:var(--muted);line-height:2">
-      گزارش ثبت‌نام‌ها، فروش دوره‌ها و میزان پیشرفت هنرجویان.
+      آمار دوره‌ها و ثبت‌نام‌ها در بالای همین داشبورد از پایگاه داده دریافت می‌شود. گزارش فروش و پیشرفت آموزشی تا زمانی که داده‌های واقعی و ساختار ثبت آن‌ها فراهم نشود، قابل محاسبه نیست.
     </p>
   </div>
 </section>
@@ -332,7 +332,7 @@ footer{
   <h2 class="section-title">تنظیمات سامانه</h2>
   <div class="panel">
     <p style="font-size:12px;color:var(--muted);line-height:2">
-      تنظیم اطلاعات مدرس، مشخصات سایت و مدیریت دسترسی‌ها.
+      تنظیمات حساب و نقش‌های مدیریتی فعلاً از این صفحه قابل‌ویرایش نیستند. برای حفظ امنیت، تغییر نقش کاربران یا تنظیمات حساس بدون کنترل دسترسی سمت سرور در این پنل ارائه نشده است.
     </p>
   </div>
 </section>
@@ -1053,8 +1053,27 @@ document.getElementById('logoutBtn')
     window.location.replace('login.html');
   });
 
+async function loadAdminOverview() {
+  const enrollmentCount = document.getElementById('enrollmentCount');
+  const publishedCourseCount = document.getElementById('publishedCourseCount');
+  enrollmentCount.textContent = '…';
+  publishedCourseCount.textContent = '…';
+
+  const [enrollmentsResult, publishedResult] = await Promise.all([
+    supabase.from('enrollments').select('student_id', { count: 'exact', head: true }),
+    supabase.from('courses').select('id', { count: 'exact', head: true }).eq('is_published', true)
+  ]);
+
+  enrollmentCount.textContent = enrollmentsResult.error
+    ? 'نامشخص'
+    : formatNumber(enrollmentsResult.count || 0);
+  publishedCourseCount.textContent = publishedResult.error
+    ? 'نامشخص'
+    : formatNumber(publishedResult.count || 0);
+}
+
 if (await protectAdminPanel()) {
-  await loadCourses();
+  await Promise.all([loadCourses(), loadAdminOverview()]);
 }
 
 </script>
