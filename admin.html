@@ -248,9 +248,15 @@ footer{
 <section id="students" style="margin-bottom:25px">
   <h2 class="section-title">مدیریت هنرجویان</h2>
   <div class="panel">
-    <p style="font-size:13px;color:var(--muted);line-height:2">
-      اطلاعات ثبت‌نام‌ها در آمار داشبورد محاسبه می‌شود؛ اما فهرست نام و ایمیل هنرجویان هنوز به نمای مدیریتی امن متصل نشده است. برای جلوگیری از نمایش اطلاعات ناقص یا افشای داده حساب‌ها، این بخش تا ایجاد دسترسی امن به پروفایل‌ها غیرفعال است.
-    </p>
+    <p style="font-size:12px;color:var(--muted);line-height:2">فهرست هنرجویان از طریق تابع امن سمت سرور دریافت می‌شود.</p>
+    <button type="button" class="secondary-btn" id="refreshStudentsBtn">به‌روزرسانی فهرست</button>
+    <div id="studentsStatus" class="status-message">برای فعال‌شدن این بخش، migration امن هنرجویان باید در Supabase اجرا شود.</div>
+    <div style="overflow-x:auto;margin-top:12px">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">
+        <thead><tr style="text-align:right;background:#f1e5cf"><th style="padding:10px">نام هنرجو</th><th style="padding:10px">ایمیل</th><th style="padding:10px">دوره‌ها</th><th style="padding:10px">درس‌های تکمیل‌شده</th><th style="padding:10px">تاریخ عضویت</th></tr></thead>
+        <tbody id="studentsTableBody"><tr><td colspan="5" style="padding:12px">اطلاعات پس از اجرای migration نمایش داده می‌شود.</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </section>
 
@@ -1057,6 +1063,23 @@ document.getElementById('logoutBtn')
     window.location.replace('login.html');
   });
 
+async function loadAdminStudents() {
+  const status = document.getElementById('studentsStatus');
+  const body = document.getElementById('studentsTableBody');
+  const button = document.getElementById('refreshStudentsBtn');
+  status.textContent = 'در حال دریافت فهرست هنرجویان…';
+  button.disabled = true;
+  const { data, error } = await supabase.rpc('admin_list_students');
+  button.disabled = false;
+  if (error) {
+    status.textContent = 'فهرست هنوز در دسترس نیست. migration مربوط به فهرست امن هنرجویان را در Supabase اجرا کنید.';
+    body.innerHTML = '<tr><td colspan="5" style="padding:12px">داده‌ای نمایش داده نشد.</td></tr>';
+    return;
+  }
+  const rows = data || [];
+  status.textContent = 'تعداد هنرجویان: ' + formatNumber(rows.length);
+  body.innerHTML = rows.length ? rows.map(row => '<tr style="border-top:1px solid var(--line)"><td style="padding:10px">'+escapeHtml(row.full_name || 'هنرجو')+'</td><td style="padding:10px;direction:ltr;text-align:right">'+escapeHtml(row.email || '—')+'</td><td style="padding:10px">'+formatNumber(row.enrollment_count || 0)+'</td><td style="padding:10px">'+formatNumber(row.completed_lessons || 0)+'</td><td style="padding:10px">'+(row.created_at ? new Date(row.created_at).toLocaleDateString('fa-IR') : '—')+'</td></tr>').join('') : '<tr><td colspan="5" style="padding:12px">هنرجوی ثبت‌نام‌شده‌ای پیدا نشد.</td></tr>';
+}
 async function loadAdminOverview() {
   const enrollmentCount = document.getElementById('enrollmentCount');
   const publishedCourseCount = document.getElementById('publishedCourseCount');
@@ -1084,6 +1107,8 @@ async function loadAdminOverview() {
 
 if (await protectAdminPanel()) {
   await Promise.all([loadCourses(), loadAdminOverview()]);
+  document.getElementById('refreshStudentsBtn')?.addEventListener('click', loadAdminStudents);
+  await loadAdminStudents();
 }
 
 </script>
