@@ -14,6 +14,12 @@ create index if not exists lesson_progress_lesson_id_idx
 
 alter table public.lesson_progress enable row level security;
 
+drop policy if exists lesson_progress_admin_read on public.lesson_progress;
+create policy lesson_progress_admin_read
+  on public.lesson_progress for select
+  to authenticated
+  using ((select public.is_admin()));
+
 drop policy if exists lesson_progress_student_read on public.lesson_progress;
 create policy lesson_progress_student_read
   on public.lesson_progress for select
