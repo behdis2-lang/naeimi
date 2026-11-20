@@ -89,7 +89,7 @@ body{
 .welcome p{font-size:13px;line-height:2;margin:0}
 .stats{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:13px;
   margin-bottom:24px;
 }
@@ -238,6 +238,10 @@ footer{
   <div class="stat">
     <strong id="publishedCourseCount">—</strong>
     <span>دوره‌های منتشرشده</span>
+  </div>
+  <div class="stat">
+    <strong id="completedLessonCount">—</strong>
+    <span>درس‌های تکمیل‌شده</span>
   </div>
 </section>
 
@@ -1056,12 +1060,15 @@ document.getElementById('logoutBtn')
 async function loadAdminOverview() {
   const enrollmentCount = document.getElementById('enrollmentCount');
   const publishedCourseCount = document.getElementById('publishedCourseCount');
+  const completedLessonCount = document.getElementById('completedLessonCount');
   enrollmentCount.textContent = '…';
   publishedCourseCount.textContent = '…';
+  completedLessonCount.textContent = '…';
 
-  const [enrollmentsResult, publishedResult] = await Promise.all([
+  const [enrollmentsResult, publishedResult, progressResult] = await Promise.all([
     supabase.from('enrollments').select('student_id', { count: 'exact', head: true }),
-    supabase.from('courses').select('id', { count: 'exact', head: true }).eq('is_published', true)
+    supabase.from('courses').select('id', { count: 'exact', head: true }).eq('is_published', true),
+    supabase.from('lesson_progress').select('lesson_id', { count: 'exact', head: true })
   ]);
 
   enrollmentCount.textContent = enrollmentsResult.error
@@ -1070,6 +1077,9 @@ async function loadAdminOverview() {
   publishedCourseCount.textContent = publishedResult.error
     ? 'نامشخص'
     : formatNumber(publishedResult.count || 0);
+  completedLessonCount.textContent = progressResult.error
+    ? 'پس از به‌روزرسانی دیتابیس'
+    : formatNumber(progressResult.count || 0);
 }
 
 if (await protectAdminPanel()) {
