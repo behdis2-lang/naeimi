@@ -20,7 +20,7 @@ body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:
 .main{min-width:0}.welcome{background:linear-gradient(100deg,rgba(62,43,24,.88),rgba(168,121,40,.70)),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85') center/cover;border-radius:18px;padding:24px;color:white;margin-bottom:18px}
 .welcome h1{font-size:21px;margin:0 0 9px}.welcome p{font-size:13px;line-height:2;margin:0}
 .preview-banner{background:#fff2d7;border:1px solid #d8b56f;color:#725322;border-radius:12px;padding:12px 15px;margin-bottom:16px;font-size:12px;line-height:2}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}.stat{padding:15px}.stat strong{display:block;font-size:22px;color:var(--brown);margin-bottom:6px}.stat span{font-size:11px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}.stat{padding:15px}.stat strong{display:block;font-size:22px;color:var(--brown);margin-bottom:6px}.stat span{font-size:11px;color:var(--muted)}
 .section-title{font-size:17px;color:var(--brown);margin:0 0 13px}.course-list{display:grid;gap:16px}
 .course-card{padding:18px;margin-bottom:16px;background:linear-gradient(180deg,rgba(255,250,240,.96),rgba(255,250,240,.99)),url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=75') center/cover}.course-head h3{margin:0 0 7px;color:var(--brown);font-size:17px}.description{font-size:12px;line-height:2;color:var(--muted);margin:0 0 14px}
 .chapter{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.chapter h4{font-size:14px;color:var(--brown);margin:0 0 8px}.chapter-desc{font-size:12px;color:var(--muted);line-height:1.9}
@@ -57,6 +57,7 @@ footer{text-align:center;padding:22px;color:var(--muted);font-size:11px}
     <div class="stat"><strong id="courseCount">—</strong><span>دوره‌های در دسترس</span></div>
     <div class="stat"><strong id="lessonCount">—</strong><span>درس‌های منتشرشده</span></div>
     <div class="stat"><strong id="assetCount">—</strong><span>فایل‌های آموزشی</span></div>
+    <div class="stat"><strong id="progressCount">۰</strong><span>درس‌های تکمیل‌شده</span></div>
   </section>
   <section id="courses" style="margin-bottom:24px"><h2 class="section-title">دوره‌های آموزشی من</h2><div id="courseList" class="course-list"><div class="loading">در حال دریافت دوره‌ها...</div></div></section>
   <section id="files" style="margin-bottom:24px"><h2 class="section-title">فایل‌های آموزشی</h2><div id="allFiles" class="notice">فایل‌های مجاز دوره‌ها پس از دریافت اطلاعات نمایش داده می‌شوند.</div></section>
@@ -70,6 +71,8 @@ const supabase = createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_pub
 document.documentElement.style.visibility='hidden';
 const $ = id => document.getElementById(id);
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+let progressEnabled = false;
+let completedLessonIds = new Set();
 const formatSize = bytes => {
   const n=Number(bytes)||0;
   if(n<1024) return n+' بایت';
@@ -134,6 +137,14 @@ async function loadStudentContent(session,isPreview=false){
   ]);
   for(const [name,result] of [['دوره‌ها',coursesResult],['فصل‌ها',chaptersResult],['درس‌ها',lessonsResult],['فایل‌ها',assetsResult]]) if(result.error) throw new Error('دریافت '+name+' ناموفق بود: '+result.error.message);
   const courses=coursesResult.data||[],chapters=chaptersResult.data||[],lessons=lessonsResult.data||[],assets=assetsResult.data||[];
+  completedLessonIds = new Set();
+  progressEnabled = !isPreview;
+  if (!isPreview) {
+    const {data: progressRows,error: progressError} = await supabase.from('lesson_progress').select('lesson_id').eq('student_id',session.user.id);
+    if (progressError) progressEnabled = false;
+    else completedLessonIds = new Set((progressRows||[]).map(row=>row.lesson_id));
+  }
+  $('progressCount').textContent=String(completedLessonIds.size);
   const lessonIds=new Set(lessons.map(x=>x.id));
   const visibleAssets=assets.filter(a=>a.owner_type==='course'||(a.owner_type==='lesson'&&lessonIds.has(a.lesson_id)));
   const signed=new Map();
@@ -162,7 +173,7 @@ async function loadStudentContent(session,isPreview=false){
         inner+='<div class="chapter"><h4>'+escapeHtml(chapter.title)+'</h4>'+(chapter.description?'<p class="chapter-desc">'+escapeHtml(chapter.description)+'</p>':'');
         for(const lesson of chapterLessons){
           const lessonAssets=usableAssets.filter(a=>a.owner_type==='lesson'&&a.lesson_id===lesson.id);
-          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'</div>';
+          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'<label class="lesson-progress" style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--brown)"><input type="checkbox" class="lesson-complete" data-lesson-id="'+escapeHtml(lesson.id)+'" '+(completedLessonIds.has(lesson.id)?'checked ':'')+(!progressEnabled?'disabled ':'')+'> تکمیل این درس</label>'+'</div>';
         }
         inner+='</div>';
       }
@@ -171,7 +182,7 @@ async function loadStudentContent(session,isPreview=false){
         inner+='<div class="chapter"><h4>درس‌های دوره</h4>';
         for(const lesson of unassigned){
           const lessonAssets=usableAssets.filter(a=>a.owner_type==='lesson'&&a.lesson_id===lesson.id);
-          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'</div>';
+          inner+='<div class="lesson"><h5>'+escapeHtml(lesson.title)+'</h5>'+(lesson.description?'<p>'+escapeHtml(lesson.description)+'</p>':'')+(lessonAssets.length?'<div class="asset-list">'+lessonAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'<small>برای این درس هنوز فایل پیوست‌شده‌ای ثبت نشده است.</small>')+'<label class="lesson-progress" style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--brown)"><input type="checkbox" class="lesson-complete" data-lesson-id="'+escapeHtml(lesson.id)+'" '+(completedLessonIds.has(lesson.id)?'checked ':'')+(!progressEnabled?'disabled ':'')+'> تکمیل این درس</label>'+'</div>';
         }
         inner+='</div>';
       }
@@ -181,6 +192,29 @@ async function loadStudentContent(session,isPreview=false){
     $('courseList').innerHTML=courseHtml.join('');
   }
   $('allFiles').innerHTML=usableAssets.length?'<div class="asset-list">'+usableAssets.map(a=>assetMarkup(a,signed.get(a.id))).join('')+'</div>':'در حال حاضر فایل منتشرشده‌ای برای نمایش وجود ندارد.';
+  if (!progressEnabled && !isPreview) {
+    $('allFiles').insertAdjacentHTML('beforebegin','<p class="notice" style="margin-bottom:12px">پیگیری پیشرفت پس از اجرای به‌روزرسانی پایگاه داده فعال می‌شود.</p>');
+  }
+  $('courseList').addEventListener('change', async event => {
+    const checkbox=event.target.closest('.lesson-complete');
+    if(!checkbox || !progressEnabled) return;
+    const lessonId=checkbox.dataset.lessonId;
+    checkbox.disabled=true;
+    const wasCompleted=completedLessonIds.has(lessonId);
+    let result;
+    if(checkbox.checked) {
+      result=await supabase.from('lesson_progress').upsert({student_id:session.user.id,lesson_id:lessonId,completed_at:new Date().toISOString()},{onConflict:'student_id,lesson_id'});
+    } else {
+      result=await supabase.from('lesson_progress').delete().eq('student_id',session.user.id).eq('lesson_id',lessonId);
+    }
+    if(result.error) {
+      checkbox.checked=wasCompleted;
+      alert('ثبت پیشرفت انجام نشد: '+result.error.message);
+    } else if(checkbox.checked) completedLessonIds.add(lessonId);
+    else completedLessonIds.delete(lessonId);
+    $('progressCount').textContent=String(completedLessonIds.size);
+    checkbox.disabled=false;
+  },{once:true});
 }
 $('logoutBtn').addEventListener('click',async event=>{event.preventDefault();await supabase.auth.signOut();window.location.replace('login.html');});
 try{
