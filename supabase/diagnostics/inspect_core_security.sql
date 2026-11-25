@@ -111,7 +111,8 @@ select
 from storage.buckets
 where id = 'course-media';
 
--- 8) Inspect Storage object policies for the course-media bucket.
+-- 8) Inspect Storage object policies. Review bucket_id conditions in qual/with_check;
+--    this query lists all object policies because a policy may be bucket-agnostic.
 select
   schemaname,
   tablename,
@@ -143,7 +144,7 @@ select
   contype,
   pg_get_constraintdef(oid) as definition
 from pg_constraint
-where conrelid = 'public.profiles'::regclass
+where conrelid = to_regclass('public.profiles')
 order by conname;
 
 -- 10) Inspect execute grants on security-sensitive public functions.
