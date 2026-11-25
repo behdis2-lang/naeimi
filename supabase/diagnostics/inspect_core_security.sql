@@ -124,3 +124,51 @@ from pg_policies
 where schemaname = 'storage'
   and tablename = 'objects'
 order by policyname;
+
+-- 9) Inspect profile role defaults, constraints, and indexes. This helps verify
+--    that new accounts cannot receive an elevated role through column defaults.
+select
+  column_name,
+  column_default,
+  is_nullable,
+  data_type
+from information_schema.columns
+where table_schema = 'public'
+  and table_name = 'profiles'
+  and column_name in ('id', 'role')
+order by ordinal_position;
+
+select
+  conname,
+  contype,
+  pg_get_constraintdef(oid) as definition
+from pg_constraint
+where conrelid = 'public.profiles'::regclass
+order by conname;
+
+-- 10) Inspect execute grants on security-sensitive public functions.
+select
+  routine_schema,
+  routine_name,
+  grantee,
+  privilege_type,
+  is_grantable
+from information_schema.routine_privileges
+where routine_schema = 'public'
+  and routine_name in ('is_admin', 'admin_list_students')
+order by routine_name, grantee, privilege_type;
+
+-- 11) Inspect enabled triggers directly from PostgreSQL catalogs, including
+--     non-internal triggers on auth.users.
+select
+  t.tgname as trigger_name,
+  pg_get_triggerdef(t.oid, true) as trigger_definition,
+  p.proname as trigger_function
+from pg_trigger t
+join pg_class c on c.oid = t.tgrelid
+join pg_namespace n on n.oid = c.relnamespace
+join pg_proc p on p.oid = t.tgfoid
+where n.nspname = 'auth'
+  and c.relname = 'users'
+  and not t.tgisinternal
+order by t.tgname;
