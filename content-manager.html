@@ -69,9 +69,9 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 </section>
 <section class="panel">
 <h2>افزودن عکس، صوت و ویدئو به همین بخش</h2>
-<label for="assetFiles">افزودن فایل‌ها (می‌توانی چند بار انتخاب کنی)</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime">
+<label for="assetFiles">افزودن فایل‌ها (می‌توانی چند بار انتخاب کنی)</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime,application/pdf">
 <div id="pendingFiles" class="small" aria-live="polite">هنوز فایلی برای بارگذاری انتخاب نشده است.</div>
-<p class="small">می‌توانی در چند نوبت فایل اضافه کنی؛ فهرست انتخاب‌ها تا زمان بارگذاری حفظ می‌شود. حداکثر حجم هر فایل در پلن رایگان Supabase برابر ۵۰ مگابایت و کل فضای ذخیره‌سازی رایگان ۱ گیگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
+<p class="small">می‌توانی در چند نوبت فایل اضافه کنی؛ فهرست انتخاب‌ها تا زمان بارگذاری حفظ می‌شود. حداکثر حجم هر فایل و سقف آپلود در نسخه رایگان ۵۰ مگابایت است. سهمیه فضای ذخیره‌سازی رایگان ۱ گیگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
 <label for="assetAccess">دسترسی فایل‌های تازه</label><select id="assetAccess"><option value="free">رایگان و قابل نمایش در صفحه عمومی</option><option value="premium">ویژه کاربران مجاز</option></select>
 <label for="assetDescription">توضیح مشترک فایل‌های انتخاب‌شده (اختیاری)</label><textarea id="assetDescription"></textarea>
 <div class="checks"><label><input id="assetDownload" type="checkbox"> اجازه دانلود</label><label><input id="assetPublish" type="checkbox" checked> انتشار فایل‌ها</label></div>
@@ -84,7 +84,7 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
 const BUCKET='course-media',MAX=50*1024*1024;
-const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime'];
+const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime','application/pdf'];
 const $=id=>document.getElementById(id);
 let pages=[],currentPage=null,currentUser=null,pendingFiles=[];
 function status(id,msg){$(id).textContent=msg||''}
@@ -230,7 +230,7 @@ $('uploadAssets').addEventListener('click',async()=>{
   status('uploadStatus','بارگذاری '+(i+1)+' از '+batch.length+' ...');
   const {error:upError}=await supabase.storage.from(BUCKET).upload(path,file,{contentType:file.type,upsert:false});
   if(upError){status('uploadStatus','خطا در بارگذاری '+file.name+': '+upError.message);break}
-  const category=file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
+  const category=file.type==='application/pdf'?'document':file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
   const {error:dbError}=await supabase.from('media_assets').insert({owner_type:'page',owner_id:currentPage.id,course_id:null,lesson_id:null,bucket_id:BUCKET,storage_path:path,original_file_name:file.name,title:file.name.replace(/\.[^.]+$/,'')||file.name,description:$('assetDescription').value.trim()||null,mime_type:file.type,file_size:file.size,category,sort_order:Date.now()+i,access_level:$('assetAccess').value,is_downloadable:$('assetDownload').checked,is_published:$('assetPublish').checked,created_by:currentUser.id});
   if(dbError){await supabase.storage.from(BUCKET).remove([path]);status('uploadStatus','فایل بارگذاری شد اما ثبت مشخصات آن خطا داشت: '+dbError.message);break}
   done++;completed.push(id);
@@ -270,8 +270,9 @@ async function loadAssets(){
    if((asset.mime_type||'').startsWith('image/')){const img=document.createElement('img');img.src=signed.signedUrl;img.alt=asset.title||'';img.style='max-width:100%;max-height:220px;border-radius:10px;display:block;margin:8px 0';preview.replaceChildren(img)}
    else if((asset.mime_type||'').startsWith('audio/')){const audio=document.createElement('audio');audio.controls=true;audio.src=signed.signedUrl;audio.style='width:100%';preview.replaceChildren(audio)}
    else if((asset.mime_type||'').startsWith('video/')){const video=document.createElement('video');video.controls=true;video.src=signed.signedUrl;video.style='width:100%;max-height:260px';preview.replaceChildren(video)}
+   else if((asset.mime_type||'')==='application/pdf'){const link=document.createElement('a');link.href=signed.signedUrl;link.target='_blank';link.rel='noopener';link.textContent='مشاهده یا دریافت فایل PDF';preview.replaceChildren(link)}
   }else preview.textContent='پیش‌نمایش در دسترس نیست؛ فایل همچنان ثبت شده است.';
-  const replaceInput=document.createElement('input');replaceInput.type='file';replaceInput.accept='image/*,audio/*,video/mp4,video/webm,video/quicktime';
+  const replaceInput=document.createElement('input');replaceInput.type='file';replaceInput.accept='image/*,audio/*,video/mp4,video/webm,video/quicktime,application/pdf';
   addField(card,'جایگزینی فایل (اختیاری)',replaceInput);
   const moveSelect=document.createElement('select');
   pages.filter(p=>p.id!==currentPage.id).forEach(p=>{const op=document.createElement('option');op.value=p.id;op.textContent=p.title;moveSelect.append(op)});
@@ -298,7 +299,7 @@ async function loadAssets(){
    const newPath='page/'+currentPage.id+'/'+Date.now()+'-replacement-'+safe;
    const {error:upError}=await supabase.storage.from(asset.bucket_id||BUCKET).upload(newPath,file,{contentType:file.type,upsert:false});
    if(upError){replaceButton.disabled=false;status('uploadStatus','بارگذاری فایل جایگزین ناموفق بود: '+upError.message);return}
-   const category=file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
+   const category=file.type==='application/pdf'?'document':file.type.startsWith('image/')?'image':file.type.startsWith('audio/')?'audio':'video';
    const {error:updateError}=await supabase.from('media_assets').update({storage_path:newPath,original_file_name:file.name,mime_type:file.type,file_size:file.size,category,updated_at:new Date().toISOString()}).eq('id',asset.id);
    if(updateError){await supabase.storage.from(asset.bucket_id||BUCKET).remove([newPath]);replaceButton.disabled=false;status('uploadStatus','ثبت فایل جدید ناموفق بود: '+updateError.message);return}
    const {error:oldError}=await supabase.storage.from(asset.bucket_id||BUCKET).remove([asset.storage_path]);

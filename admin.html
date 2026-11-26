@@ -285,8 +285,8 @@ footer{
         <div class="form-field"><label for="courseVideo">ویدئوی دوره</label><input id="courseVideo" type="file" accept="video/mp4,video/webm"></div>
         <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
-          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
-          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی چندین فایل صوتی، تصویری یا ویدئویی را هم‌زمان انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm,application/pdf">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی چندین فایل صوتی، تصویری یا ویدئویی را هم‌زمان انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است؛ مطابق محدودیت پلن رایگان Storage.</small>
         </div>
         
         <div class="form-field">
@@ -380,7 +380,8 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const allowedTypes = {
   image: ['image/jpeg', 'image/png', 'image/webp'],
   audio: ['audio/mpeg', 'audio/mp4', 'audio/wav'],
-  video: ['video/mp4', 'video/webm']
+  video: ['video/mp4', 'video/webm'],
+  document: ['application/pdf']
 };
 
 function formatNumber(value) {
@@ -772,8 +773,8 @@ function showAddCourseForm() {
         </div>
         <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
-          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
-          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm,application/pdf">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است؛ مطابق محدودیت پلن رایگان Storage.</small>
         </div>
         <div class="form-field">
           <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
@@ -856,7 +857,7 @@ async function saveCourse(event) {
     }
   }
 
-  const allAllowedTypes = [...allowedTypes.image, ...allowedTypes.audio, ...allowedTypes.video];
+  const allAllowedTypes = [...allowedTypes.image, ...allowedTypes.audio, ...allowedTypes.video, ...allowedTypes.document];
   for (const file of additionalFiles) {
     if (!allAllowedTypes.includes(file.type)) {
       message.textContent = 'یکی از فایل‌های بیشتر فرمت مجاز ندارد.';
@@ -982,11 +983,13 @@ async function saveCourse(event) {
         }
         uploadedPaths.push(storagePath);
 
-        const category = file.type.startsWith('image/')
-          ? 'image'
-          : file.type.startsWith('audio/')
-            ? 'audio'
-            : 'video';
+        const category = file.type === 'application/pdf'
+          ? 'document'
+          : file.type.startsWith('image/')
+            ? 'image'
+            : file.type.startsWith('audio/')
+              ? 'audio'
+              : 'video';
         const assetTitle = file.name.split('.').slice(0, -1).join('.') || file.name;
 
         const { error: assetInsertError } = await supabase
@@ -1146,8 +1149,8 @@ window.openNewCourseForm = function () {
         </div>
         <div class="form-field course-assets-field">
           <label for="courseAssets">افزودن فایل‌های بیشتر (امکان انتخاب چند فایل)</label>
-          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm">
-          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است.</small>
+          <input id="courseAssets" type="file" multiple accept="image/jpeg,image/png,image/webp,audio/mpeg,audio/mp4,audio/wav,video/mp4,video/webm,application/pdf">
+          <small style="display:block;color:var(--muted);line-height:2;margin-top:6px">می‌توانی هر تعداد فایل صوتی، تصویری یا ویدئویی انتخاب کنی. حداکثر حجم هر فایل ۵۰ مگابایت است؛ مطابق محدودیت پلن رایگان Storage.</small>
         </div>
         <div class="form-field">
           <label for="assetAccessLevel">سطح دسترسی فایل‌های بیشتر</label>
