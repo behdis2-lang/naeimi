@@ -71,7 +71,7 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 <h2>افزودن عکس، صوت و ویدئو به همین بخش</h2>
 <label for="assetFiles">افزودن فایل‌ها (می‌توانی چند بار انتخاب کنی)</label><input id="assetFiles" type="file" multiple accept="image/*,audio/*,video/mp4,video/webm,video/quicktime,application/pdf">
 <div id="pendingFiles" class="small" aria-live="polite">هنوز فایلی برای بارگذاری انتخاب نشده است.</div>
-<p class="small">می‌توانی در چند نوبت فایل اضافه کنی؛ فهرست انتخاب‌ها تا زمان بارگذاری حفظ می‌شود. حداکثر حجم انتخاب‌شده در سامانه ۱۰۰ مگابایت است؛ اما پلن رایگان Supabase سقف آپلود ۵۰ مگابایت دارد و برای فایل‌های بزرگ‌تر باید پلن و محدودیت کلی Storage افزایش یابد. سهمیه فضای ذخیره‌سازی رایگان ۱ گیگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
+<p class="small">می‌توانی در چند نوبت فایل اضافه کنی؛ فهرست انتخاب‌ها تا زمان بارگذاری حفظ می‌شود. حداکثر حجم هر فایل و سقف آپلود در نسخه رایگان ۵۰ مگابایت است. سهمیه فضای ذخیره‌سازی رایگان ۱ گیگابایت است. فایل‌ها در فضای خصوصی ذخیره می‌شوند. فایل رایگانِ منتشرشده در صفحه عمومی همان بخش نمایش داده می‌شود؛ فایل ویژه فقط برای کاربران مجاز قابل دسترسی خواهد بود.</p>
 <label for="assetAccess">دسترسی فایل‌های تازه</label><select id="assetAccess"><option value="free">رایگان و قابل نمایش در صفحه عمومی</option><option value="premium">ویژه کاربران مجاز</option></select>
 <label for="assetDescription">توضیح مشترک فایل‌های انتخاب‌شده (اختیاری)</label><textarea id="assetDescription"></textarea>
 <div class="checks"><label><input id="assetDownload" type="checkbox"> اجازه دانلود</label><label><input id="assetPublish" type="checkbox" checked> انتشار فایل‌ها</label></div>
@@ -83,7 +83,7 @@ button{font:13px Tahoma,Arial,sans-serif;cursor:pointer;border:0;border-radius:9
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const supabase=createClient('https://zowmefbbhowjyozynpay.supabase.co','sb_publishable_iz-in_P7bzRwgbx6SlSdaA_sK6-EyUS');
-const BUCKET='course-media',MAX=100*1024*1024;
+const BUCKET='course-media',MAX=50*1024*1024;
 const ALLOWED_PREFIXES=['image/','audio/','video/mp4','video/webm','video/quicktime','application/pdf'];
 const $=id=>document.getElementById(id);
 let pages=[],currentPage=null,currentUser=null,pendingFiles=[];
@@ -211,7 +211,7 @@ function renderPendingFiles(){
 $('assetFiles').addEventListener('change',()=>{
  const incoming=[...$('assetFiles').files];let added=0,issues=[];
  for(const file of incoming){
-  if(file.size>MAX){issues.push(file.name+': بیشتر از ۱۰۰ مگابایت');continue}
+  if(file.size>MAX){issues.push(file.name+': بیشتر از ۵۰ مگابایت');continue}
   if(!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?file.type.startsWith(t):file.type===t)){issues.push(file.name+': فرمت پشتیبانی نمی‌شود');continue}
   pendingFiles.push({id:crypto.randomUUID(),file});added++;
  }
@@ -292,7 +292,7 @@ async function loadAssets(){
   const replaceButton=document.createElement('button');replaceButton.className='secondary';replaceButton.textContent='جایگزینی با فایل انتخاب‌شده';
   replaceButton.addEventListener('click',async()=>{
    const file=replaceInput.files?.[0];if(!file){status('uploadStatus','ابتدا فایل جایگزین را انتخاب کن.');return}
-   if(file.size>MAX){status('uploadStatus','حجم فایل بیشتر از ۱۰۰ مگابایت است.');return}
+   if(file.size>MAX){status('uploadStatus','حجم فایل بیشتر از ۵۰ مگابایت است.');return}
    if(!ALLOWED_PREFIXES.some(t=>t.endsWith('/')?file.type.startsWith(t):file.type===t)){status('uploadStatus','فرمت فایل پشتیبانی نمی‌شود.');return}
    replaceButton.disabled=true;
    const safe=file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');
